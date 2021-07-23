@@ -1,10 +1,13 @@
 package db
 
 import (
+	"context"
+	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"os"
+	"time"
 )
 
 var db *gorm.DB
@@ -25,13 +28,15 @@ func DB() {
 	if err != nil {
 		panic(err)
 	}
-	initializeServices()
+	migrateModels(db)
+	initializeServices(db)
 }
 
-func ConnectionHealth() error  {
+func ConnectionHealth(ctx *gin.Context) error {
 	db, err := db.DB()
 	if err != nil {
 		return err
 	}
-	return db.Ping()
+	c, _ := context.WithTimeout(ctx, time.Minute)
+	return db.PingContext(c)
 }

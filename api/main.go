@@ -17,7 +17,7 @@ func init() {
 	viper.SetConfigFile(".env")
 	viper.SetConfigType("env")
 	if err := viper.ReadInConfig(); err != nil {
-		log.Println("Error reading config file: %s", err.Error())
+		log.Printf("Error reading config file: %s\n", err.Error())
 	} else {
 		_ = os.Setenv("SECRET", viper.GetString("SECRET"))
 		_ = os.Setenv("PORT", viper.GetString("PORT"))
@@ -32,7 +32,7 @@ func main() {
 	r := gin.Default()
 	if os.Getenv("DEPLOYMENT") == "PUBLIC" {
 		router.RegisterPublicRoutes(r)
-	} else if  os.Getenv("DEPLOYMENT") == "ADMIN" {
+	} else if os.Getenv("DEPLOYMENT") == "ADMIN" {
 		router.RegisterAdminRoutes(r)
 		router.RegisterPublicRoutes(r)
 	}

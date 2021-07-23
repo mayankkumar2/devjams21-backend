@@ -8,7 +8,7 @@ import (
 )
 
 func HealthController(c *gin.Context) {
-	dbHealth := db.ConnectionHealth()
+	dbHealth := db.ConnectionHealth(c)
 	if dbHealth != nil {
 		views.ErrorView(dbHealth, c)
 	} else {

@@ -10,7 +10,7 @@ import (
 
 var authClient *auth.Client
 
-func InitFirebaseService()  {
+func InitFirebaseService() {
 	opt := option.WithCredentialsFile("config/firebase.json")
 	app, err := f.NewApp(context.Background(), nil, opt)
 	if err != nil {
@@ -20,4 +20,16 @@ func InitFirebaseService()  {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func GetUserDetail(ctx context.Context, idToken string) (*auth.UserRecord, error) {
+	t, err := authClient.VerifyIDToken(ctx, idToken)
+	if err != nil {
+		return nil, err
+	}
+	usr, err := authClient.GetUser(ctx, t.UID)
+	if err != nil {
+		return nil, err
+	}
+	return usr, nil
 }
