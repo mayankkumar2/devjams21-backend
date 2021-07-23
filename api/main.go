@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/GDGVIT/devjams21-backend/api/router"
 	"github.com/GDGVIT/devjams21-backend/db"
+	"github.com/GDGVIT/devjams21-backend/pkg/firebaseUtil"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	log "github.com/sirupsen/logrus"
@@ -22,14 +23,12 @@ func init() {
 	_ = os.Setenv("PORT", viper.GetString("PORT"))
 	_ = os.Setenv("DATABASE_URL", viper.GetString("DATABASE_URL"))
 	_ = os.Setenv("DEPLOYMENT", viper.GetString("DEPLOYMENT"))
-
 }
 
 func main() {
 	db.DB()
-
+	firebaseUtil.InitFirebaseService()
 	r := gin.Default()
-
 	if os.Getenv("DEPLOYMENT") == "PUBLIC" {
 		router.RegisterPublicRoutes(r)
 	} else if  os.Getenv("DEPLOYMENT") == "ADMIN" {
