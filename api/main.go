@@ -17,12 +17,13 @@ func init() {
 	viper.SetConfigFile(".env")
 	viper.SetConfigType("env")
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file: %s", err.Error())
+		log.Println("Error reading config file: %s", err.Error())
+	} else {
+		_ = os.Setenv("SECRET", viper.GetString("SECRET"))
+		_ = os.Setenv("PORT", viper.GetString("PORT"))
+		_ = os.Setenv("DATABASE_URL", viper.GetString("DATABASE_URL"))
+		_ = os.Setenv("DEPLOYMENT", viper.GetString("DEPLOYMENT"))
 	}
-	_ = os.Setenv("SECRET", viper.GetString("SECRET"))
-	_ = os.Setenv("PORT", viper.GetString("PORT"))
-	_ = os.Setenv("DATABASE_URL", viper.GetString("DATABASE_URL"))
-	_ = os.Setenv("DEPLOYMENT", viper.GetString("DEPLOYMENT"))
 }
 
 func main() {
