@@ -1,1 +1,1 @@
-web: mkdir -p config/ && eval "echo $FIREBASE_CONFIG > config/firebase.json" && ./bin/main
+web: mkdir -p config/ && echo $FIREBASE_CONFIG > config/firebase.json && ./bin/main
