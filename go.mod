@@ -1,5 +1,5 @@
 // +heroku install ./api/main.go
-// +heroku goVersion go1.16.5
+// +heroku goVersion go1.16
 module github.com/GDGVIT/devjams21-backend
 
 go 1.16
