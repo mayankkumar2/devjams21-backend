@@ -1,38 +1,44 @@
 package main
 
 import (
+	"github.com/GDGVIT/devjams21-backend/api/router"
 	"github.com/GDGVIT/devjams21-backend/db"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"net/http"
 	"os"
 )
 
 func init() {
-
-	log.SetFormatter(&log.JSONFormatter{})
+	log.SetFormatter(&log.TextFormatter{})
 	log.SetOutput(os.Stdout)
-	viper.SetConfigFile("config.json")
-	//if err := viper.ReadInConfig(); err != nil {
-	//	log.Fatalf("Error reading config file: %s", err.Error())
-	//}
-	_ = os.Setenv("SECRET", viper.GetString("jwt_secret"))
+	viper.SetConfigFile(".env")
+	viper.SetConfigType("env")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Error reading config file: %s", err.Error())
+	}
+	_ = os.Setenv("SECRET", viper.GetString("SECRET"))
+	_ = os.Setenv("PORT", viper.GetString("PORT"))
+	_ = os.Setenv("DATABASE_URL", viper.GetString("DATABASE_URL"))
+	_ = os.Setenv("DEPLOYMENT", viper.GetString("DEPLOYMENT"))
+
 }
 
 func main() {
 	db.DB()
+
 	r := gin.Default()
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status": "ok",
-		})
-	})
+	if os.Getenv("DEPLOYMENT") == "PUBLIC" {
+		router.RegisterPublicRoutes(r)
+	} else if  os.Getenv("DEPLOYMENT") == "ADMIN" {
+		router.RegisterAdminRoutes(r)
+		router.RegisterPublicRoutes(r)
+	}
+
 	port := os.Getenv("PORT")
 	conn := "0.0.0.0:" + port
-
 
 	log.Printf("Server running on %s", conn)
 	log.Fatal(r.Run(conn))

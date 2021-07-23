@@ -1,50 +1,40 @@
 package views
 
 import (
-	"encoding/json"
-	"errors"
-	"net/http"
-
+	"database/sql/driver"
+	e "github.com/GDGVIT/devjams21-backend/errors"
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"gorm.io/gorm"
+	"net/http"
 )
 
-type ErrView struct {
-	Message string `json:"message"`
-	Status  int    `json:"status"`
-}
-
-var (
-	ErrMethodNotAllowed = errors.New("error: Method is not allowed")
-	ErrInvalidToken     = errors.New("error: Invalid Authorization token")
-	ErrUserExists       = errors.New("error: User already exists")
-)
 
 var ErrHTTPStatusMap = map[string]int{
-	ErrMethodNotAllowed.Error(): http.StatusMethodNotAllowed,
-	ErrInvalidToken.Error():     http.StatusBadRequest,
-	ErrUserExists.Error():       http.StatusConflict,
+	e.ErrMethodNotAllowed.Error(): http.StatusMethodNotAllowed,
+	e.ErrInvalidToken.Error():     http.StatusBadRequest,
+	e.ErrUserExists.Error():       http.StatusConflict,
+	driver.ErrBadConn.Error(): http.StatusServiceUnavailable,
+	gorm.ErrInvalidDB.Error(): http.StatusServiceUnavailable,
 }
 
-func Wrap(err error, w http.ResponseWriter) {
+func ErrorView(err error, c *gin.Context) {
 	msg := err.Error()
 	code := ErrHTTPStatusMap[msg]
 
-	// If error code is not found
-	// like a default case
 	if code == 0 {
 		code = http.StatusInternalServerError
 	}
 
-	w.WriteHeader(code)
-
-	errView := ErrView{
-		Message: msg,
-		Status:  code,
-	}
 	log.WithFields(log.Fields{
 		"message": msg,
 		"code":    code,
 	}).Error("Error occurred")
 
-	json.NewEncoder(w).Encode(errView)
+	c.JSON(code, gin.H{
+		"code": code,
+		"error": true,
+		"message": msg,
+	})
 }
+
