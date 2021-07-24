@@ -1,0 +1,94 @@
+package controller
+
+import (
+	"github.com/GDGVIT/devjams21-backend/api/schema"
+	"github.com/GDGVIT/devjams21-backend/api/views"
+	"github.com/GDGVIT/devjams21-backend/db"
+	e "github.com/GDGVIT/devjams21-backend/errors"
+	"github.com/GDGVIT/devjams21-backend/pkg/model"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+	"net/http"
+)
+
+func GetTeamController(ctx *gin.Context) {
+	payload := new(schema.FindTeamRequest)
+	if err := ctx.BindQuery(payload); err != nil {
+		views.ErrorView(err, ctx)
+		return
+	}
+	teamID, _ := uuid.Parse(payload.ID)
+
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+	m, err := db.TeamService.GetTeamMember(ctx, &teamID, usr.ID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrUnauthorizedNotTeamMemeber, ctx)
+		} else {
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+	t, err := db.TeamService.FindByID(ctx, &teamID)
+	if err != nil {
+		views.ErrorView(err, ctx)
+		return
+	}
+	members, err := db.TeamService.GetMembers(ctx, t.ID)
+	if err != nil {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	views.DataView(ctx, http.StatusOK, "success", gin.H{
+		"team": gin.H{
+			"team_details": t,
+			"user_details": m,
+			"members": members,
+		},
+	})
+}
+
+func CreateTeamController(ctx *gin.Context) {
+	payload := new(schema.CreateTeamRequest)
+	if err := ctx.BindJSON(payload); err != nil {
+		return
+	}
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+	t, err := db.TeamService.CreateTeam(ctx, usr, payload.TeamName)
+	if err != nil {
+		views.ErrorView(err, ctx)
+		return
+	}
+	views.DataView(ctx, http.StatusCreated, "success", t)
+}
+
+
+func ReGenTeamCodeController(ctx *gin.Context) {
+	payload := new(schema.CreateTeamRequest)
+	if err := ctx.BindJSON(payload); err != nil {
+		return
+	}
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+	t, err := db.TeamService.CreateTeam(ctx, usr, payload.TeamName)
+	if err != nil {
+		views.ErrorView(err, ctx)
+		return
+	}
+	views.DataView(ctx, http.StatusCreated, "success", t)
+}

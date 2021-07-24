@@ -9,6 +9,8 @@ import (
 func migrateModels(db *gorm.DB) {
 	err := db.AutoMigrate(
 		&model.User{},
+		&model.Team{},
+		&model.TeamXUser{},
 	)
 	if err != nil {
 		logrus.Errorln(err)

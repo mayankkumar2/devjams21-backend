@@ -8,7 +8,9 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"math/rand"
 	"os"
+	"time"
 )
 
 func init() {
@@ -24,6 +26,7 @@ func init() {
 		_ = os.Setenv("DATABASE_URL", viper.GetString("DATABASE_URL"))
 		_ = os.Setenv("DEPLOYMENT", viper.GetString("DEPLOYMENT"))
 	}
+	rand.Seed(time.Now().UnixNano())
 }
 
 func main() {

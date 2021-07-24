@@ -34,16 +34,15 @@ func (r *repo) CreateUser(ctx context.Context, record *auth.UserRecord, req *sch
 func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.User, error) {
 	usr := new(model.User)
 	return usr, r.DB.WithContext(ctx).
-		First(usr, "id = ?",id.String()).Error
+		First(usr, "id = ?", id.String()).Error
 }
 
-func (r *repo) FindByUID (ctx context.Context, uid string) (*model.User, error){
+func (r *repo) FindByUID(ctx context.Context, uid string) (*model.User, error) {
 	var usr = new(model.User)
 	return usr, r.DB.WithContext(ctx).First(usr, "uid = ?", uid).Error
 }
 
-
-func (r *repo) UpdateAttributes(ctx context.Context, id *uuid.UUID, p map[string] interface{}) error {
+func (r *repo) UpdateAttributes(ctx context.Context, id *uuid.UUID, p map[string]interface{}) error {
 	return r.DB.WithContext(ctx).Model(&model.User{
 		BaseModel: model.BaseModel{
 			ID: id,

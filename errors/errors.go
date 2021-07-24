@@ -9,5 +9,6 @@ var (
 	ErrBadPayloadFormat   = errors.New("error: Invalid payload schema")
 	ErrUserInvalidIDToken = errors.New("error: Invalid id_token string")
 	ErrUserCreateErr      = errors.New("error: Unexpected error while creating user")
-	ErrUnexpected		= errors.New("error: unexpected error occurred")
+	ErrUnexpected         = errors.New("error: unexpected error occurred")
+	ErrUnauthorizedNotTeamMemeber = errors.New("error: Unauthorized to access team data")
 )

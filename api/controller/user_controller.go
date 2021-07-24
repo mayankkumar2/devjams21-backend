@@ -15,7 +15,6 @@ import (
 func CreateUserController(ctx *gin.Context) {
 	var payload = new(schema.CreateUserRequest)
 
-
 	if err := ctx.BindJSON(payload); err != nil {
 		return
 	}
@@ -38,13 +37,13 @@ func CreateUserController(ctx *gin.Context) {
 		return
 	}
 	views.DataView(ctx, http.StatusCreated, "success", gin.H{
-		"user": usr,
-		"token": tok,
+		"user":   usr,
+		"token":  tok,
 		"expiry": exp,
 	})
 }
 
-func UserProfileController(ctx *gin.Context)  {
+func UserProfileController(ctx *gin.Context) {
 	userValue, exists := ctx.Get("user")
 	if !exists {
 		views.ErrorView(e.ErrUnexpected, ctx)
@@ -56,8 +55,8 @@ func UserProfileController(ctx *gin.Context)  {
 }
 
 func UserProfileUpdateController(ctx *gin.Context) {
-	var payload struct{
-		Updates map[string] interface{} `json:"updates"`
+	var payload struct {
+		Updates map[string]interface{} `json:"updates"`
 	}
 	if err := ctx.BindJSON(&payload); err != nil {
 		return
@@ -71,7 +70,7 @@ func UserProfileUpdateController(ctx *gin.Context) {
 
 	allowedAttributes := []string{"name", "college", "reg_no"}
 
-	updatesPayload := make(map[string] interface{})
+	updatesPayload := make(map[string]interface{})
 	for _, v := range allowedAttributes {
 		if k, ok := payload.Updates[v]; ok {
 			updatesPayload[v] = k
@@ -87,8 +86,8 @@ func UserProfileUpdateController(ctx *gin.Context) {
 	views.DataView(ctx, http.StatusOK, "success", nil)
 }
 
-func UserLoginController(ctx *gin.Context)  {
-	var payload = new(struct{
+func UserLoginController(ctx *gin.Context) {
+	var payload = new(struct {
 		IdToken string `json:"id_token"`
 	})
 
@@ -113,9 +112,9 @@ func UserLoginController(ctx *gin.Context)  {
 		views.ErrorView(err, ctx)
 		return
 	}
-	views.DataView(ctx, http.StatusCreated, "success", gin.H{
-		"user": usr,
-		"token": tok,
+	views.DataView(ctx, http.StatusOK, "success", gin.H{
+		"user":   usr,
+		"token":  tok,
 		"expiry": exp,
 	})
 }
