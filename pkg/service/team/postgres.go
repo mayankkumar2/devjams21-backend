@@ -45,7 +45,7 @@ func (r *repo) GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser
 func (r *repo) GetTeamMember(ctx context.Context, teamId,userId *uuid.UUID) (*model.TeamXUser,error) {
 	var t = new(model.TeamXUser)
 	err := r.DB.WithContext(ctx).
-		Find(t, "team_id = ? AND user_id = ?", teamId, userId).Error
+		First(t, "team_id = ? AND user_id = ?", teamId, userId).Error
 	if err != nil {
 		return nil, err
 	}
