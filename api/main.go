@@ -30,11 +30,12 @@ func main() {
 	db.DB()
 	firebaseUtil.InitFirebaseService()
 	r := gin.Default()
+	api := r.Group("api")
 	if os.Getenv("DEPLOYMENT") == "PUBLIC" {
-		router.RegisterPublicRoutes(r)
+		router.RegisterPublicRoutes(api)
 	} else if os.Getenv("DEPLOYMENT") == "ADMIN" {
-		router.RegisterAdminRoutes(r)
-		router.RegisterPublicRoutes(r)
+		router.RegisterAdminRoutes(api)
+		router.RegisterPublicRoutes(api)
 	}
 
 	port := os.Getenv("PORT")

@@ -9,4 +9,5 @@ var (
 	ErrBadPayloadFormat   = errors.New("error: Invalid payload schema")
 	ErrUserInvalidIDToken = errors.New("error: Invalid id_token string")
 	ErrUserCreateErr      = errors.New("error: Unexpected error while creating user")
+	ErrUnexpected		= errors.New("error: unexpected error occurred")
 )
