@@ -24,7 +24,10 @@ func CreateUserController(ctx *gin.Context) {
 	}
 
 	usr, err := db.UserService.CreateUser(ctx, usrRec, payload)
-
+	if err != nil {
+		views.ErrorView(e.ErrUserExists, ctx)
+		return
+	}
 	views.DataView(ctx, http.StatusOK, "success", gin.H{
 		"user": usr,
 	})
