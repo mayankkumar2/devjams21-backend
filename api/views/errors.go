@@ -18,6 +18,7 @@ var ErrHTTPStatusMap = map[error]int{
 	e.ErrBadPayloadFormat:   http.StatusUnprocessableEntity,
 	e.ErrUserInvalidIDToken: http.StatusUnauthorized,
 	e.ErrUserCreateErr:      http.StatusServiceUnavailable,
+	gorm.ErrRecordNotFound: http.StatusNotFound,
 }
 
 func ErrorView(err error, c *gin.Context) {

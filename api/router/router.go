@@ -9,9 +9,11 @@ import (
 func RegisterPublicRoutes(r *gin.RouterGroup) {
 	usrRouter := r.Group("/user")
 	{
-		usrRouter.GET("", controller.HealthController)
+		usrRouter.GET("/", controller.HealthController)
 		usrRouter.POST("/create", controller.CreateUserController)
+		usrRouter.POST("/login", controller.UserLoginController)
 		usrRouter.GET("/profile", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserProfileController)
+		usrRouter.PATCH("/update", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserProfileUpdateController)
 	}
 
 	r.GET("/", controller.HealthController)
