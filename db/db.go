@@ -1,15 +1,22 @@
 package db
 
 import (
-	"github.com/jinzhu/gorm"
+	"context"
+	"github.com/gin-gonic/gin"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"os"
+	"time"
 )
 
 var db *gorm.DB
 
 func dbConnect() (*gorm.DB, error) {
 	if os.Getenv("DATABASE_URL") != "" {
-		return gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+		return gorm.Open(postgres.Open(os.Getenv("DATABASE_URL")), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Info),
+		})
 	} else {
 		panic("error: DATABASE_URL environment URL not present or is empty in the environment")
 	}
@@ -21,5 +28,15 @@ func DB() {
 	if err != nil {
 		panic(err)
 	}
-	initializeServices()
+	migrateModels(db)
+	initializeServices(db)
+}
+
+func ConnectionHealth(ctx *gin.Context) error {
+	db, err := db.DB()
+	if err != nil {
+		return err
+	}
+	c, _ := context.WithTimeout(ctx, time.Minute)
+	return db.PingContext(c)
 }

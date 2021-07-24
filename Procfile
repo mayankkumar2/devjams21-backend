@@ -1,1 +1,1 @@
-web: mkdir -p config/ && cat $FIREBASE_CONFIG > config/firebase.json && ./bin/main
+web: mkdir -p config/ && echo "$FIREBASE_CONFIG" > config/firebase.json && ./bin/main
