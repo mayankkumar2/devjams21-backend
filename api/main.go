@@ -4,6 +4,8 @@ import (
 	"github.com/GDGVIT/devjams21-backend/api/router"
 	"github.com/GDGVIT/devjams21-backend/db"
 	"github.com/GDGVIT/devjams21-backend/pkg/firebaseUtil"
+	"github.com/GDGVIT/devjams21-backend/pkg/sentryUtil"
+	"github.com/getsentry/sentry-go"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	log "github.com/sirupsen/logrus"
@@ -25,6 +27,7 @@ func init() {
 		_ = os.Setenv("PORT", viper.GetString("PORT"))
 		_ = os.Setenv("DATABASE_URL", viper.GetString("DATABASE_URL"))
 		_ = os.Setenv("DEPLOYMENT", viper.GetString("DEPLOYMENT"))
+		_ = os.Setenv("SENTRY_URL", viper.GetString("SENTRY_URL"))
 	}
 	rand.Seed(time.Now().UnixNano())
 }
@@ -32,6 +35,8 @@ func init() {
 func main() {
 	db.DB()
 	firebaseUtil.InitFirebaseService()
+	sentryUtil.InitSentry()
+	defer sentry.Flush(2 * time.Second)
 	r := gin.Default()
 	api := r.Group("api")
 	if os.Getenv("DEPLOYMENT") == "PUBLIC" {

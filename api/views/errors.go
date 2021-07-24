@@ -10,16 +10,17 @@ import (
 )
 
 var ErrHTTPStatusMap = map[error]int{
-	e.ErrMethodNotAllowed:   http.StatusMethodNotAllowed,
-	e.ErrInvalidToken:       http.StatusBadRequest,
-	e.ErrUserExists:         http.StatusConflict,
-	driver.ErrBadConn:       http.StatusServiceUnavailable,
-	gorm.ErrInvalidDB:       http.StatusServiceUnavailable,
-	e.ErrBadPayloadFormat:   http.StatusUnprocessableEntity,
-	e.ErrUserInvalidIDToken: http.StatusUnauthorized,
-	e.ErrUserCreateErr:      http.StatusServiceUnavailable,
-	gorm.ErrRecordNotFound:  http.StatusNotFound,
-	e.ErrUnauthorizedNotTeamMemeber: http.StatusUnauthorized,
+	e.ErrMethodNotAllowed:          http.StatusMethodNotAllowed,
+	e.ErrInvalidToken:              http.StatusBadRequest,
+	e.ErrUserExists:                http.StatusConflict,
+	driver.ErrBadConn:              http.StatusServiceUnavailable,
+	gorm.ErrInvalidDB:              http.StatusServiceUnavailable,
+	e.ErrBadPayloadFormat:          http.StatusUnprocessableEntity,
+	e.ErrUserInvalidIDToken:        http.StatusUnauthorized,
+	e.ErrUserCreateErr:             http.StatusServiceUnavailable,
+	gorm.ErrRecordNotFound:         http.StatusNotFound,
+	e.ErrUnauthorizedNotTeamMember: http.StatusUnauthorized,
+	e.ErrUnauthorizedNotTeamLeader: http.StatusUnauthorized,
 }
 
 func ErrorView(err error, c *gin.Context) {

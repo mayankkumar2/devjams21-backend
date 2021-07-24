@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"github.com/getsentry/sentry-go"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -26,6 +27,7 @@ func DB() {
 	var err error
 	db, err = dbConnect()
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	migrateModels(db)
@@ -35,6 +37,7 @@ func DB() {
 func ConnectionHealth(ctx *gin.Context) error {
 	db, err := db.DB()
 	if err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 	c, _ := context.WithTimeout(ctx, time.Minute)

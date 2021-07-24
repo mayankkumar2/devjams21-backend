@@ -17,6 +17,22 @@ func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.Team, error)
 	return &t, r.DB.WithContext(ctx).Where("id = ?", id.String()).Find(&t).Error
 }
 
+func (r *repo) UpdateTeamCode(ctx context.Context, team *model.Team) error {
+	err := r.DB.WithContext(ctx).
+		Table("teams").
+		Where("id = ?", team.ID).
+		Update("join_code", util.RandStringRunes(16)).
+		Error
+	for err != gorm.ErrRecordNotFound && err != nil {
+		err = r.DB.WithContext(ctx).
+			Table("teams").
+			Where("id = ?", team.ID).
+			Update("join_code", util.RandStringRunes(16)).
+			Error
+	}
+	return err
+}
+
 func (r *repo) GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser,error) {
 	var t []model.TeamXUser
 	err := r.DB.WithContext(ctx).Joins("User").Find(&t, "team_id = ?", id).Error

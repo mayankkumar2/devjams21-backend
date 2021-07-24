@@ -11,10 +11,16 @@ type Service interface {
 	CreateTeam(ctx context.Context, usr *model.User, teamName string) (*model.Team, error)
 	GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser,error)
 	GetTeamMember(ctx context.Context, teamId,userId *uuid.UUID) (*model.TeamXUser,error)
+	UpdateTeamCode(ctx context.Context, team *model.Team) error
+
 }
 
 type svc struct {
 	repo Repository
+}
+
+func (s *svc) UpdateTeamCode(ctx context.Context, team *model.Team) error {
+	return s.repo.UpdateTeamCode(ctx, team)
 }
 
 func (s *svc) GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser, error) {
