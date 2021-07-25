@@ -9,7 +9,7 @@ type Event struct {
 	End         time.Time              `json:"end"`
 	RSVPStart   time.Time              `json:"rsvp_start"`
 	RSVPEnd     time.Time              `json:"rsvp_end"`
-	Meta        map[string]interface{} `json:"meta"`
+	Meta        map[string]interface{} `json:"meta" gorm:"type:json"`
 	MemberLimit uint                   `json:"member_limit"`
 	Challenge   []Challenge            `json:"challenge,omitempty"`
 }
