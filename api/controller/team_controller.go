@@ -130,3 +130,193 @@ func CreateTeamController(ctx *gin.Context) {
 	}
 	views.DataView(ctx, http.StatusCreated, "success", t)
 }
+
+func JoinTeamController(ctx *gin.Context) {
+	payload := new(schema.JoinTeamRequest)
+	if err := ctx.BindJSON(payload); err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+
+	t, err := db.TeamService.FindByJoinCode(ctx, payload.Code)
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+
+	err = db.TeamService.JoinTeam(ctx, t, usr)
+	if err != nil {
+		sentry.CaptureException(err)
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrTeamNotFound, ctx)
+		} else {
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+	views.DataView(ctx, http.StatusOK, "success", gin.H{
+		"team": t,
+	})
+}
+
+func LeaveTeamController(ctx *gin.Context) {
+	payload := new(schema.TeamIDRequest)
+	if err := ctx.BindJSON(payload); err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+	m, err := db.TeamService.GetTeamMember(ctx, payload.ID, usr.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrUnauthorizedNotTeamMember, ctx)
+		} else {
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+	if m.IsLeader {
+		views.ErrorView(e.ErrTeamLeaderMandatory, ctx)
+		return
+	}
+	t, err := db.TeamService.FindByID(ctx, payload.ID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrTeamNotFound, ctx)
+		} else {
+			sentry.CaptureException(err)
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+	err = db.TeamService.RemoveFromTeam(ctx, t, usr)
+	if err != nil {
+		views.ErrorView(err, ctx)
+		return
+	}
+	views.DataView(ctx, http.StatusOK, "success", gin.H{
+		"team": t,
+	})
+}
+
+func RemoveMemberController(ctx *gin.Context) {
+	payload := new(schema.TeamXMemberRequest)
+	if err := ctx.BindJSON(payload); err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+	m, err := db.TeamService.GetTeamMember(ctx, payload.ID, usr.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrUnauthorizedNotTeamMember, ctx)
+		} else {
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+	if !m.IsLeader {
+		views.ErrorView(e.ErrUnauthorizedNotTeamLeader, ctx)
+		return
+	}
+	t, err := db.TeamService.FindByID(ctx, payload.ID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrTeamNotFound, ctx)
+		} else {
+			sentry.CaptureException(err)
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+	u, err := db.UserService.FindByID(ctx, payload.ID)
+	if err != nil {
+		views.ErrorView(e.ErrUserNotFound, ctx)
+		return
+	}
+
+	err = db.TeamService.RemoveFromTeam(ctx, t, u)
+	if err != nil {
+		views.ErrorView(err, ctx)
+		return
+	}
+	views.DataView(ctx, http.StatusOK, "user removed", gin.H{})
+}
+
+func AcceptMemberRequestController(ctx *gin.Context) {
+	payload := new(schema.TeamXMemberRequest)
+	if err := ctx.BindJSON(payload); err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+	m, err := db.TeamService.GetTeamMember(ctx, payload.ID, usr.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrUnauthorizedNotTeamMember, ctx)
+		} else {
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+	if !m.IsLeader {
+		views.ErrorView(e.ErrUnauthorizedNotTeamLeader, ctx)
+		return
+	}
+	t, err := db.TeamService.FindByID(ctx, payload.ID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrTeamNotFound, ctx)
+		} else {
+			sentry.CaptureException(err)
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+	u, err := db.UserService.FindByID(ctx, payload.ID)
+	if err != nil {
+		views.ErrorView(e.ErrUserNotFound, ctx)
+		return
+	}
+	err = db.TeamService.AcceptJoinRequest(ctx, t, u.ID)
+	if err != nil {
+		if gorm.ErrRecordNotFound == err {
+			views.ErrorView(e.ErrJoinRequestNotFound, ctx)
+		} else {
+			sentry.CaptureException(err)
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+	views.DataView(ctx, http.StatusOK, "user join request accepted", gin.H{})
+}

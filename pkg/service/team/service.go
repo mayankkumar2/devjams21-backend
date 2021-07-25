@@ -12,10 +12,30 @@ type Service interface {
 	GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser, error)
 	GetTeamMember(ctx context.Context, teamId, userId *uuid.UUID) (*model.TeamXUser, error)
 	UpdateTeamCode(ctx context.Context, team *model.Team) error
+	FindByJoinCode(ctx context.Context, code string) (*model.Team,error)
+	JoinTeam(ctx context.Context, team *model.Team, usr *model.User) error
+	RemoveFromTeam(ctx context.Context, team *model.Team, usr *model.User)  error
+	AcceptJoinRequest(ctx context.Context, team *model.Team, userID *uuid.UUID) error
 }
 
 type svc struct {
 	repo Repository
+}
+
+func (s *svc) FindByJoinCode(ctx context.Context, code string) (*model.Team, error) {
+	return s.repo.FindByJoinCode(ctx, code)
+}
+
+func (s *svc) JoinTeam(ctx context.Context, team *model.Team, usr *model.User) error {
+	return s.repo.JoinTeam(ctx, team, usr)
+}
+
+func (s *svc) RemoveFromTeam(ctx context.Context, team *model.Team, usr *model.User) error {
+	return s.repo.RemoveFromTeam(ctx, team, usr)
+}
+
+func (s *svc) AcceptJoinRequest(ctx context.Context, team *model.Team, userID *uuid.UUID) error {
+	return s.repo.AcceptJoinRequest(ctx, team, userID)
 }
 
 func (s *svc) UpdateTeamCode(ctx context.Context, team *model.Team) error {

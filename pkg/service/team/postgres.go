@@ -17,6 +17,34 @@ func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.Team, error)
 	return &t, r.DB.WithContext(ctx).Where("id = ?", id.String()).Find(&t).Error
 }
 
+func (r *repo) FindByJoinCode(ctx context.Context, code string) (*model.Team,error) {
+	t := new(model.Team)
+	return t, r.DB.WithContext(ctx).
+		First(t, "join_code = ?", code).Error
+}
+
+func (r *repo) JoinTeam(ctx context.Context, team *model.Team, usr *model.User) error {
+	m := &model.TeamXUser{
+		UserID:     usr.ID,
+		TeamID:     team.ID,
+		IsLeader:   false,
+		IsAccepted: false,
+	}
+	return r.DB.WithContext(ctx).Create(m).Error
+}
+
+func (r *repo) RemoveFromTeam(ctx context.Context, team *model.Team, usr *model.User)  error {
+	return r.DB.WithContext(ctx).Where("user_id = ? AND team_id = ?", usr.ID, team.ID).
+		Delete(&model.TeamXUser{}).Error
+}
+
+func (r *repo) AcceptJoinRequest(ctx context.Context, team *model.Team, userID *uuid.UUID) error {
+	return r.DB.WithContext(ctx).Table("team_x_users").
+		Where("team_id = ? AND user_id = ?", team.ID, userID).
+		Update("IsAccepted", true).
+		Error
+}
+
 func (r *repo) UpdateTeamCode(ctx context.Context, team *model.Team) error {
 	err := r.DB.WithContext(ctx).
 		Table("teams").
