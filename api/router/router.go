@@ -9,7 +9,6 @@ import (
 func RegisterPublicRoutes(r *gin.RouterGroup) {
 	usrRouter := r.Group("/user")
 	{
-		usrRouter.GET("/", controller.HealthController)
 		usrRouter.POST("/create", controller.CreateUserController)
 		usrRouter.POST("/login", controller.UserLoginController)
 		usrRouter.GET("/profile", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserProfileController)
@@ -31,6 +30,6 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 	r.GET("/health", controller.HealthController)
 }
 
-func RegisterAdminRoutes(r *gin.RouterGroup) {
+func RegisterAdminRoutes(_ *gin.RouterGroup) {
 
 }
