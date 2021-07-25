@@ -9,10 +9,9 @@ import (
 type Service interface {
 	FindByID(ctx context.Context, id *uuid.UUID) (*model.Team, error)
 	CreateTeam(ctx context.Context, usr *model.User, teamName string) (*model.Team, error)
-	GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser,error)
-	GetTeamMember(ctx context.Context, teamId,userId *uuid.UUID) (*model.TeamXUser,error)
+	GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser, error)
+	GetTeamMember(ctx context.Context, teamId, userId *uuid.UUID) (*model.TeamXUser, error)
 	UpdateTeamCode(ctx context.Context, team *model.Team) error
-
 }
 
 type svc struct {

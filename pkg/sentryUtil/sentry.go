@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func InitSentry()  {
+func InitSentry() {
 	sentryUrl := os.Getenv("SENTRY_URL")
 	fmt.Println("[INFO] initializing sentry:", sentryUrl)
 	err := sentry.Init(sentry.ClientOptions{

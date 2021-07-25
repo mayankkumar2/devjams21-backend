@@ -33,7 +33,7 @@ func (r *repo) UpdateTeamCode(ctx context.Context, team *model.Team) error {
 	return err
 }
 
-func (r *repo) GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser,error) {
+func (r *repo) GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser, error) {
 	var t []model.TeamXUser
 	err := r.DB.WithContext(ctx).Joins("User").Find(&t, "team_id = ?", id).Error
 	if err != nil {
@@ -42,7 +42,7 @@ func (r *repo) GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser
 	return t, err
 }
 
-func (r *repo) GetTeamMember(ctx context.Context, teamId,userId *uuid.UUID) (*model.TeamXUser,error) {
+func (r *repo) GetTeamMember(ctx context.Context, teamId, userId *uuid.UUID) (*model.TeamXUser, error) {
 	var t = new(model.TeamXUser)
 	err := r.DB.WithContext(ctx).
 		First(t, "team_id = ? AND user_id = ?", teamId, userId).Error
