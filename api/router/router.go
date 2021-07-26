@@ -30,6 +30,14 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 	r.GET("/health", controller.HealthController)
 }
 
-func RegisterAdminRoutes(_ *gin.RouterGroup) {
+func RegisterAdminRoutes(r *gin.RouterGroup) {
+
+	eventRouter := r.Group("/event")
+	{
+		eventRouter.POST("/create", controller.CreateEventController)
+		eventRouter.PATCH("/update", controller.UpdateEventController)
+		eventRouter.DELETE("/delete", controller.DeleteEventController)
+		eventRouter.GET("/get", controller.GetEventController)
+	}
 
 }
