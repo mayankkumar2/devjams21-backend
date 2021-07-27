@@ -14,27 +14,21 @@ type repo struct {
 }
 
 func (r *repo) CreateEvent(ctx context.Context, payload *schema.CreateEventRequest) (*model.Event, error) {
-	e := new(model.Event)
-	err := r.DB.WithContext(ctx).Transaction(
-		func(ex *gorm.DB) error {
-			e.EventName = payload.EventName
-			e.Start = payload.Start
-			e.End = payload.End
-			e.RSVPStart = payload.RSVPStart
-			e.RSVPEnd = payload.RSVPEnd
-			e.Meta = payload.Meta
-			e.MemberLimit = payload.MemberLimit
-			// Challenges
 
-			err := ex.Create(e).Error
-			return err
+	db := r.DB.WithContext(ctx)
 
-		},
-	)
-	if err != nil {
-		return nil, err
+	event := &model.Event{
+		EventName:   payload.EventName,
+		Start:       payload.Start,
+		End:         payload.End,
+		RSVPStart:   payload.RSVPStart,
+		RSVPEnd:     payload.RSVPEnd,
+		Meta:        payload.Meta,
+		MemberLimit: payload.MemberLimit,
+		// Challenges
 	}
-	return e, nil
+
+	return event, db.Create(&event).Error
 }
 
 func (r *repo) GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error) {

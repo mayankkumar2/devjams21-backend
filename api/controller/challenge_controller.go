@@ -10,14 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateEventController(ctx *gin.Context) {
-	payload := new(schema.CreateEventRequest)
+func CreateChallengeController(ctx *gin.Context) {
+	payload := new(schema.CreateChallengeRequest)
 	if err := ctx.BindJSON(payload); err != nil {
 		sentry.CaptureException(err)
 		return
 	}
 
-	e, err := db.EventService.CreateEvent(ctx, payload)
+	challenge, err := db.ChallengeService.CreateChallenge(ctx, payload)
 
 	if err != nil {
 		sentry.CaptureException(err)
@@ -25,17 +25,18 @@ func CreateEventController(ctx *gin.Context) {
 		return
 	}
 
-	views.DataView(ctx, http.StatusCreated, "success", e)
+	views.DataView(ctx, http.StatusCreated, "success", challenge)
 }
 
-func UpdateEventController(ctx *gin.Context) {
-	payload := new(schema.UpdateEventRequest)
+func GetChallengeController(ctx *gin.Context) {
+	payload := new(schema.GetChallengeRequest)
+
 	if err := ctx.BindJSON(payload); err != nil {
 		sentry.CaptureException(err)
 		return
 	}
 
-	event, err := db.EventService.GetEvent(ctx, payload.ID)
+	challenge, err := db.ChallengeService.GetChallenge(ctx, payload.ID)
 
 	if err != nil {
 		sentry.CaptureException(err)
@@ -43,7 +44,27 @@ func UpdateEventController(ctx *gin.Context) {
 		return
 	}
 
-	err = db.EventService.UpdateEvent(ctx, event, payload)
+	views.DataView(ctx, http.StatusOK, "success", challenge)
+
+}
+
+func UpdateChallengeController(ctx *gin.Context) {
+	payload := new(schema.UpdateChallengeRequest)
+
+	if err := ctx.BindJSON(payload); err != nil {
+		sentry.CaptureException(err)
+		return
+	}
+
+	challenge, err := db.ChallengeService.GetChallenge(ctx, payload.ID)
+
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+
+	err = db.ChallengeService.UpdateChallenge(ctx, challenge, payload)
 
 	if err != nil {
 		sentry.CaptureException(err)
@@ -52,16 +73,18 @@ func UpdateEventController(ctx *gin.Context) {
 	}
 
 	views.DataView(ctx, http.StatusOK, "success", gin.H{})
+
 }
 
-func DeleteEventController(ctx *gin.Context) {
-	payload := new(schema.DeleteEventRequest)
+func DeleteChallengeController(ctx *gin.Context) {
+	payload := new(schema.DeleteChallengeRequest)
+
 	if err := ctx.BindJSON(payload); err != nil {
 		sentry.CaptureException(err)
 		return
 	}
 
-	err := db.EventService.DeleteEvent(ctx, payload.ID)
+	err := db.ChallengeService.DeleteChallenge(ctx, payload.ID)
 
 	if err != nil {
 		sentry.CaptureException(err)
@@ -70,22 +93,5 @@ func DeleteEventController(ctx *gin.Context) {
 	}
 
 	views.DataView(ctx, http.StatusOK, "success", gin.H{})
-}
 
-func GetEventController(ctx *gin.Context) {
-	payload := new(schema.GetEventRequest)
-	if err := ctx.BindJSON(payload); err != nil {
-		sentry.CaptureException(err)
-		return
-	}
-
-	event, err := db.EventService.GetEvent(ctx, payload.ID)
-
-	if err != nil {
-		sentry.CaptureException(err)
-		views.ErrorView(err, ctx)
-		return
-	}
-
-	views.DataView(ctx, http.StatusOK, "success", event)
 }

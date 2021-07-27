@@ -35,9 +35,17 @@ func RegisterAdminRoutes(r *gin.RouterGroup) {
 	eventRouter := r.Group("/event")
 	{
 		eventRouter.POST("/create", controller.CreateEventController)
-		eventRouter.PATCH("/update", controller.UpdateEventController)
+		eventRouter.PUT("/update", controller.UpdateEventController)
 		eventRouter.DELETE("/delete", controller.DeleteEventController)
 		eventRouter.GET("/get", controller.GetEventController)
+	}
+
+	challengeRouter := r.Group("/challenge")
+	{
+		challengeRouter.POST("/create", controller.CreateChallengeController)
+		challengeRouter.GET("/get", controller.GetChallengeController)
+		challengeRouter.PUT("/update", controller.UpdateChallengeController)
+		challengeRouter.DELETE("/delete", controller.DeleteChallengeController)
 	}
 
 }
