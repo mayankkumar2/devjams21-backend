@@ -18,6 +18,6 @@ type TeamIDRequest struct {
 	ID *uuid.UUID `json:"team_id"`
 }
 type TeamXMemberRequest struct {
-	ID *uuid.UUID `json:"team_id"`
+	ID       *uuid.UUID `json:"team_id"`
 	MemberID *uuid.UUID `json:"member_id"`
 }
