@@ -17,7 +17,7 @@ func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.Team, error)
 	return &t, r.DB.WithContext(ctx).Where("id = ?", id.String()).Find(&t).Error
 }
 
-func (r *repo) FindByJoinCode(ctx context.Context, code string) (*model.Team,error) {
+func (r *repo) FindByJoinCode(ctx context.Context, code string) (*model.Team, error) {
 	t := new(model.Team)
 	return t, r.DB.WithContext(ctx).
 		First(t, "join_code = ?", code).Error
@@ -33,7 +33,7 @@ func (r *repo) JoinTeam(ctx context.Context, team *model.Team, usr *model.User) 
 	return r.DB.WithContext(ctx).Create(m).Error
 }
 
-func (r *repo) RemoveFromTeam(ctx context.Context, team *model.Team, usr *model.User)  error {
+func (r *repo) RemoveFromTeam(ctx context.Context, team *model.Team, usr *model.User) error {
 	return r.DB.WithContext(ctx).Where("user_id = ? AND team_id = ?", usr.ID, team.ID).
 		Delete(&model.TeamXUser{}).Error
 }

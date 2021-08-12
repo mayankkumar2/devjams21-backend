@@ -11,11 +11,11 @@ import (
 )
 
 var (
-	UserService user2.Service = nil
-	TeamService team.Service  = nil
-	ChallengeService challenge.Service = nil
-	EventService event.Service = nil
-	SubmissionService submission.Service = nil
+	UserService          user2.Service         = nil
+	TeamService          team.Service          = nil
+	ChallengeService     challenge.Service     = nil
+	EventService         event.Service         = nil
+	SubmissionService    submission.Service    = nil
 	ParticipationService participation.Service = nil
 )
 

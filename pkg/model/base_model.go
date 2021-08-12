@@ -7,9 +7,9 @@ import (
 )
 
 type BaseModel struct {
-	ID        *uuid.UUID    `json:"id,omitempty" gorm:"type:uuid"`
-	CreatedAt *time.Time    `json:"created_at,omitempty"`
-	UpdatedAt *time.Time    `json:"updated_at,omitempty"`
+	ID        *uuid.UUID `json:"id,omitempty" gorm:"type:uuid"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
 func (u *BaseModel) BeforeCreate(_ *gorm.DB) (err error) {
