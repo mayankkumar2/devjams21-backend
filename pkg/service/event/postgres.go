@@ -33,7 +33,7 @@ func (r *repo) CreateEvent(ctx context.Context, payload *schema.CreateEventReque
 
 func (r *repo) GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error) {
 	e := new(model.Event)
-	err := r.DB.WithContext(ctx).First(e, "event_id = ?", ID).Error
+	err := r.DB.WithContext(ctx).First(e, "id = ?", ID).Error
 	if err != nil {
 		return nil, err
 	}
@@ -41,13 +41,11 @@ func (r *repo) GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error
 }
 
 func (r *repo) UpdateEvent(ctx context.Context, event *model.Event, payload *schema.UpdateEventRequest) error {
-
-	return r.DB.WithContext(ctx).Table("events").Where("id = ?", event.ID).Updates(payload).Error
-
+	return r.DB.WithContext(ctx).Table("events").Where("id = ?", payload.ID).Omit("id").Updates(payload).Error
 }
 
 func (r *repo) DeleteEvent(ctx context.Context, ID *uuid.UUID) error {
-	return r.DB.WithContext(ctx).Table("events").Delete(ID).Error
+	return r.DB.WithContext(ctx).Table("events").Where("id = ?", ID).Delete(ID).Error
 }
 
 func NewRepo(db *gorm.DB) Repository {
