@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+
 	"firebase.google.com/go/auth"
 	"github.com/GDGVIT/devjams21-backend/api/schema"
 	"github.com/GDGVIT/devjams21-backend/pkg/model"
@@ -40,6 +41,30 @@ func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.User, error)
 func (r *repo) FindByUID(ctx context.Context, uid string) (*model.User, error) {
 	var usr = new(model.User)
 	return usr, r.DB.WithContext(ctx).First(usr, "uid = ?", uid).Error
+}
+
+func (r *repo) GetTeams(ctx context.Context, userID *uuid.UUID) ([]model.Team, error) {
+	var t []model.Team
+	err := r.DB.Find(t, "user_id = ?", userID).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return t, err
+
+}
+
+func (r *repo) IsLeader(cxt context.Context, userID *uuid.UUID, teamID *uuid.UUID) (bool, error) {
+	var is_leader bool
+	err := r.DB.Select("is_leader").First(is_leader, "user_id = ? AND team_id = ?", userID, teamID).Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return is_leader, err
+
 }
 
 func (r *repo) UpdateAttributes(ctx context.Context, id *uuid.UUID, p map[string]interface{}) error {
