@@ -13,6 +13,8 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 		usrRouter.POST("/login", controller.UserLoginController)
 		usrRouter.GET("/profile", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserProfileController)
 		usrRouter.PATCH("/update", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserProfileUpdateController)
+		usrRouter.GET("/teams", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserTeamsController)
+		usrRouter.GET("/leader", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserLeaderController)
 	}
 
 	teamRouter := r.Group("/team")
@@ -24,6 +26,11 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 		teamRouter.DELETE("/leave", middleware.AuthMiddleware(), middleware.AttachUser, controller.LeaveTeamController)
 		teamRouter.DELETE("/member/remove", middleware.AuthMiddleware(), middleware.AttachUser, controller.RemoveMemberController)
 		teamRouter.DELETE("/member/accept", middleware.AuthMiddleware(), middleware.AttachUser, controller.AcceptMemberRequestController)
+	}
+
+	partRouter := r.Group("/part")
+	{
+		partRouter.GET("/teams", middleware.AuthMiddleware(), middleware.AttachUser, controller.GetTeamsController)
 	}
 
 	r.GET("/", controller.HealthController)

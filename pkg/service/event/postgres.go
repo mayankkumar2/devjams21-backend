@@ -18,14 +18,14 @@ func (r *repo) CreateEvent(ctx context.Context, payload *schema.CreateEventReque
 	db := r.DB.WithContext(ctx)
 
 	event := &model.Event{
-		EventName:   payload.EventName,
-		Start:       payload.Start,
-		End:         payload.End,
-		RSVPStart:   payload.RSVPStart,
-		RSVPEnd:     payload.RSVPEnd,
-		Meta:        payload.Meta,
-		MemberLimit: payload.MemberLimit,
-		// Challenges
+		EventName:        payload.EventName,
+		Start:            payload.Start,
+		End:              payload.End,
+		RSVPStart:        payload.RSVPStart,
+		RSVPEnd:          payload.RSVPEnd,
+		Meta:             payload.Meta,
+		MemberLimit:      payload.MemberLimit,
+		MemberLowerLimit: payload.MemberLowerLimit,
 	}
 
 	return event, db.Create(&event).Error

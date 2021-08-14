@@ -1,6 +1,8 @@
 package participation
 
 import (
+	"context"
+
 	"github.com/GDGVIT/devjams21-backend/pkg/model"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -17,7 +19,6 @@ func NewRepo(db *gorm.DB) Repository {
 }
 
 // Mayank Kumar's Team For Event
-
 
 func (r *repo) CreateParticipation(eventId *uuid.UUID, userID *uuid.UUID, teamName string) (*model.Participation, error) {
 	var p *model.Participation
@@ -64,4 +65,16 @@ func (r *repo) DeleteParticipation(p *model.Participation) error {
 func (r *repo) FindByID(id *uuid.UUID) (*model.Participation, error) {
 	p := new(model.Participation)
 	return p, r.DB.Find(p, "id = ?", id).Error
+}
+
+func (r *repo) GetParticipationTeams(ctx context.Context, eventID *uuid.UUID) ([]model.Team, error) {
+	var teams []model.Team
+
+	err := r.DB.Find(teams, "event_id = ?", eventID).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return teams, err
 }

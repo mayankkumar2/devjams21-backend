@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/GDGVIT/devjams21-backend/api/middleware"
 	"github.com/GDGVIT/devjams21-backend/api/schema"
 	"github.com/GDGVIT/devjams21-backend/api/views"
@@ -10,7 +12,7 @@ import (
 	"github.com/GDGVIT/devjams21-backend/pkg/model"
 	"github.com/getsentry/sentry-go"
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"github.com/google/uuid"
 )
 
 func CreateUserController(ctx *gin.Context) {
@@ -126,5 +128,52 @@ func UserLoginController(ctx *gin.Context) {
 		"user":   usr,
 		"token":  tok,
 		"expiry": exp,
+	})
+}
+
+func UserTeamsController(ctx *gin.Context) {
+	payload := new(struct {
+		UserID *uuid.UUID `json:"user_id"`
+	})
+
+	if err := ctx.BindJSON(payload); err != nil {
+		sentry.CaptureException(err)
+		return
+	}
+
+	teams, err := db.UserService.GetTeams(ctx, payload.UserID)
+
+	if err != nil {
+		views.ErrorView(err, ctx)
+		sentry.CaptureException(err)
+		return
+	}
+
+	views.DataView(ctx, http.StatusOK, "success", gin.H{
+		"teams": teams,
+	})
+}
+
+func UserLeaderController(ctx *gin.Context) {
+	payload := new(struct {
+		UserID *uuid.UUID `json:"user_id"`
+		TeamID *uuid.UUID `json:"team_id"`
+	})
+
+	if err := ctx.BindJSON(payload); err != nil {
+		sentry.CaptureException(err)
+		return
+	}
+
+	isleader, err := db.UserService.IsLeader(ctx, payload.UserID, payload.TeamID)
+
+	if err != nil {
+		views.ErrorView(err, ctx)
+		sentry.CaptureException(err)
+		return
+	}
+
+	views.DataView(ctx, http.StatusOK, "success", gin.H{
+		"is_leader": isleader,
 	})
 }
