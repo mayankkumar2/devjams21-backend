@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/GDGVIT/devjams21-backend/api/schema"
 	"github.com/GDGVIT/devjams21-backend/api/views"
 	"github.com/GDGVIT/devjams21-backend/db"
@@ -10,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 func UpdateTeamCodeController(ctx *gin.Context) {
@@ -319,4 +320,46 @@ func AcceptMemberRequestController(ctx *gin.Context) {
 		return
 	}
 	views.DataView(ctx, http.StatusOK, "user join request accepted", gin.H{})
+}
+
+func CheckTeamFullController(ctx *gin.Context) {
+	payload := new(struct {
+		TeamID  *uuid.UUID `json:"team_id"`
+		EventID *uuid.UUID `json:"event_id"`
+	})
+
+	if err := ctx.BindJSON(payload); err != nil {
+		sentry.CaptureException(err)
+		return
+	}
+
+	event, err := db.EventService.GetEvent(ctx, payload.EventID)
+
+	if err != nil {
+		views.ErrorView(err, ctx)
+		sentry.CaptureException(err)
+		return
+	}
+
+	memberLimit := event.MemberLimit
+	memberLowerLimit := event.MemberLowerLimit
+
+	members, err := db.TeamService.GetMembers(ctx, payload.TeamID)
+
+	if err != nil {
+		views.ErrorView(err, ctx)
+		sentry.CaptureException(err)
+		return
+	}
+
+	member_count := len(members)
+
+	isFull := int(memberLimit) == member_count
+	isEmpty := int(memberLowerLimit) == member_count
+
+	views.DataView(ctx, http.StatusOK, "success", gin.H{
+		"is_full":  isFull,
+		"is_empty": isEmpty,
+	})
+
 }
