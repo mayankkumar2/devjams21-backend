@@ -11,7 +11,7 @@ import (
 type Service interface {
 	CreateEvent(ctx context.Context, payload *schema.CreateEventRequest) (*model.Event, error)
 	GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error)
-	UpdateEvent(ctx context.Context, event *model.Event, payload *schema.UpdateEventRequest) error
+	UpdateEvent(ctx context.Context, payload *schema.UpdateEventRequest) error
 	DeleteEvent(ctx context.Context, ID *uuid.UUID) error
 }
 
@@ -27,8 +27,8 @@ func (s *svc) GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error)
 	return s.repo.GetEvent(ctx, ID)
 }
 
-func (s *svc) UpdateEvent(ctx context.Context, event *model.Event, payload *schema.UpdateEventRequest) error {
-	return s.repo.UpdateEvent(ctx, event, payload)
+func (s *svc) UpdateEvent(ctx context.Context, payload *schema.UpdateEventRequest) error {
+	return s.repo.UpdateEvent(ctx, payload)
 }
 
 func (s *svc) DeleteEvent(ctx context.Context, ID *uuid.UUID) error {

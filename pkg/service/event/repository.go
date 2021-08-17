@@ -11,6 +11,6 @@ import (
 type Repository interface {
 	CreateEvent(ctx context.Context, payload *schema.CreateEventRequest) (*model.Event, error)
 	GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error)
-	UpdateEvent(ctx context.Context, event *model.Event, payload *schema.UpdateEventRequest) error
+	UpdateEvent(ctx context.Context, payload *schema.UpdateEventRequest) error
 	DeleteEvent(ctx context.Context, ID *uuid.UUID) error
 }

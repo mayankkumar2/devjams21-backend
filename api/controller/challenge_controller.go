@@ -51,20 +51,11 @@ func GetChallengeController(ctx *gin.Context) {
 func UpdateChallengeController(ctx *gin.Context) {
 	payload := new(schema.UpdateChallengeRequest)
 
-	if err := ctx.BindJSON(payload); err != nil {
+	if err := ctx.ShouldBindJSON(payload); err != nil {
 		sentry.CaptureException(err)
-		return
 	}
 
-	challenge, err := db.ChallengeService.GetChallenge(ctx, payload.ID)
-
-	if err != nil {
-		sentry.CaptureException(err)
-		views.ErrorView(err, ctx)
-		return
-	}
-
-	err = db.ChallengeService.UpdateChallenge(ctx, challenge, payload)
+	err := db.ChallengeService.UpdateChallenge(ctx, payload)
 
 	if err != nil {
 		sentry.CaptureException(err)

@@ -20,9 +20,9 @@ func NewRepo(db *gorm.DB) Repository {
 
 // Mayank Kumar's Team For Event
 
-func (r *repo) CreateParticipation(eventId *uuid.UUID, userID *uuid.UUID, teamName string) (*model.Participation, error) {
+func (r *repo) CreateParticipation(ctx context.Context, eventId *uuid.UUID, userID *uuid.UUID, teamName string) (*model.Participation, error) {
 	var p *model.Participation
-	return p, r.DB.Transaction(func(tx *gorm.DB) error {
+	return p, r.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		p = &model.Participation{
 			Team: &model.Team{
 				TeamName: teamName,
@@ -46,8 +46,8 @@ func (r *repo) CreateParticipation(eventId *uuid.UUID, userID *uuid.UUID, teamNa
 	})
 }
 
-func (r *repo) DeleteParticipation(p *model.Participation) error {
-	return r.DB.Transaction(func(tx *gorm.DB) error {
+func (r *repo) DeleteParticipation(ctx context.Context, p *model.Participation) error {
+	return r.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Delete(&model.Participation{}).Where("id = ?", p.ID).Error; err != nil {
 			return err
 		}
@@ -62,15 +62,15 @@ func (r *repo) DeleteParticipation(p *model.Participation) error {
 	})
 }
 
-func (r *repo) FindByID(id *uuid.UUID) (*model.Participation, error) {
+func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.Participation, error) {
 	p := new(model.Participation)
-	return p, r.DB.Find(p, "id = ?", id).Error
+	return p, r.DB.WithContext(ctx).Find(p, "id = ?", id).Error
 }
 
 func (r *repo) GetParticipationTeams(ctx context.Context, eventID *uuid.UUID) ([]model.Team, error) {
 	var teams []model.Team
 
-	err := r.DB.Find(teams, "event_id = ?", eventID).Error
+	err := r.DB.WithContext(ctx).Find(teams, "event_id = ?", eventID).Error
 
 	if err != nil {
 		return nil, err

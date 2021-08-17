@@ -23,7 +23,7 @@ func (r *repo) CreateEvent(ctx context.Context, payload *schema.CreateEventReque
 		End:              payload.End,
 		RSVPStart:        payload.RSVPStart,
 		RSVPEnd:          payload.RSVPEnd,
-		Meta:             payload.Meta,
+		Meta:             model.JSON(payload.Meta),
 		MemberLimit:      payload.MemberLimit,
 		MemberLowerLimit: payload.MemberLowerLimit,
 	}
@@ -40,8 +40,29 @@ func (r *repo) GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error
 	return e, err
 }
 
-func (r *repo) UpdateEvent(ctx context.Context, event *model.Event, payload *schema.UpdateEventRequest) error {
-	return r.DB.WithContext(ctx).Table("events").Where("id = ?", payload.ID).Omit("id").Updates(payload).Error
+func (r *repo) UpdateEvent(ctx context.Context, payload *schema.UpdateEventRequest) error {
+	db := r.DB.WithContext(ctx)
+	event := new(model.Event)
+
+	err := db.WithContext(ctx).Table("events").First(event, "id = ?", payload.ID).Error
+
+	if err != nil {
+		return err
+	}
+
+	event.EventName = payload.EventName
+	event.Start = payload.Start
+	event.End = payload.End
+	event.RSVPStart = payload.RSVPStart
+	event.RSVPEnd = payload.RSVPEnd
+	event.Meta = model.JSON(payload.Meta)
+	event.MemberLimit = payload.MemberLimit
+	event.MemberLowerLimit = payload.MemberLowerLimit
+
+	err = db.Save(&event).Error
+
+	return err
+
 }
 
 func (r *repo) DeleteEvent(ctx context.Context, ID *uuid.UUID) error {
