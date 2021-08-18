@@ -3,7 +3,7 @@ package schema
 import "github.com/google/uuid"
 
 type FindTeamRequest struct {
-	ID string `json:"team_id" form:"team_id" binding:"uuid"`
+	ID string `json:"team_id" form:"team_id" type:"gorm:uuid"`
 }
 
 type CreateTeamRequest struct {

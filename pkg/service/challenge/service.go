@@ -11,7 +11,7 @@ import (
 type Service interface {
 	CreateChallenge(ctx context.Context, payload *schema.CreateChallengeRequest) (*model.Challenge, error)
 	GetChallenge(ctx context.Context, EventID *uuid.UUID) (*model.Challenge, error)
-	UpdateChallenge(ctx context.Context, challenge *model.Challenge, payload *schema.UpdateChallengeRequest) error
+	UpdateChallenge(ctx context.Context, payload *schema.UpdateChallengeRequest) error
 	DeleteChallenge(ctx context.Context, ID *uuid.UUID) error
 }
 
@@ -27,8 +27,8 @@ func (s *svc) GetChallenge(ctx context.Context, ID *uuid.UUID) (*model.Challenge
 	return s.repo.GetChallenge(ctx, ID)
 }
 
-func (s *svc) UpdateChallenge(ctx context.Context, challenge *model.Challenge, payload *schema.UpdateChallengeRequest) error {
-	return s.repo.UpdateChallenge(ctx, challenge, payload)
+func (s *svc) UpdateChallenge(ctx context.Context, payload *schema.UpdateChallengeRequest) error {
+	return s.repo.UpdateChallenge(ctx, payload)
 }
 
 func (s *svc) DeleteChallenge(ctx context.Context, ID *uuid.UUID) error {

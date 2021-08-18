@@ -18,7 +18,7 @@ func (r *repo) CreateChallenge(ctx context.Context, payload *schema.CreateChalle
 
 	c := &model.Challenge{
 		EventID: payload.EventID,
-		Meta:    payload.Meta,
+		Meta:    model.JSON(payload.Meta),
 	}
 
 	return c, db.Create(&c).Error
@@ -36,15 +36,15 @@ func (r *repo) GetChallenge(ctx context.Context, ID *uuid.UUID) (*model.Challeng
 	return c, nil
 }
 
-func (r *repo) UpdateChallenge(ctx context.Context, challenge *model.Challenge, payload *schema.UpdateChallengeRequest) error {
+func (r *repo) UpdateChallenge(ctx context.Context, payload *schema.UpdateChallengeRequest) error {
 
-	return r.DB.WithContext(ctx).Table("events").Where("id = ?", challenge.ID).Updates(payload).Error
+	return r.DB.WithContext(ctx).Table("challenges").Where("id = ?", payload.ID).Omit("id, event_id").Updates(payload).Error
 
 }
 
 func (r *repo) DeleteChallenge(ctx context.Context, ID *uuid.UUID) error {
 
-	return r.DB.WithContext(ctx).Table("events").Delete(ID).Error
+	return r.DB.WithContext(ctx).Table("challenges").Where("id = ?", ID).Delete(ID).Error
 
 }
 

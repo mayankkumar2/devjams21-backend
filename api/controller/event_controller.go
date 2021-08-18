@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/GDGVIT/devjams21-backend/api/schema"
@@ -30,20 +31,12 @@ func CreateEventController(ctx *gin.Context) {
 
 func UpdateEventController(ctx *gin.Context) {
 	payload := new(schema.UpdateEventRequest)
-	if err := ctx.BindJSON(payload); err != nil {
+
+	if err := ctx.ShouldBindJSON(payload); err != nil {
 		sentry.CaptureException(err)
-		return
 	}
-
-	event, err := db.EventService.GetEvent(ctx, payload.ID)
-
-	if err != nil {
-		sentry.CaptureException(err)
-		views.ErrorView(err, ctx)
-		return
-	}
-
-	err = db.EventService.UpdateEvent(ctx, event, payload)
+	fmt.Println(payload)
+	err := db.EventService.UpdateEvent(ctx, payload)
 
 	if err != nil {
 		sentry.CaptureException(err)

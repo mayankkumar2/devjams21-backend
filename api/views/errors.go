@@ -2,11 +2,12 @@ package views
 
 import (
 	"database/sql/driver"
+	"net/http"
+
 	e "github.com/GDGVIT/devjams21-backend/errors"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 var ErrHTTPStatusMap = map[error]int{

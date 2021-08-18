@@ -44,26 +44,45 @@ func (r *repo) FindByUID(ctx context.Context, uid string) (*model.User, error) {
 }
 
 func (r *repo) GetTeams(ctx context.Context, userID *uuid.UUID) ([]model.Team, error) {
+	var txu []model.TeamXUser
 	var t []model.Team
-	err := r.DB.Find(t, "user_id = ?", userID).Error
+	err := r.DB.WithContext(ctx).Table("team_x_users").Find(&txu, "user_id = ?", userID).Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	return t, err
+	var flag error = nil
+
+	for _, instance := range txu {
+		var team model.Team
+		team_id := instance.TeamID
+		err := r.DB.WithContext(ctx).Table("teams").Find(&team, "id = ?", team_id).Error
+		if err != nil {
+			flag = err
+			break
+		}
+		t = append(t, team)
+	}
+
+	if flag == nil {
+		return t, flag
+	} else {
+		return nil, flag
+	}
 
 }
 
-func (r *repo) IsLeader(cxt context.Context, userID *uuid.UUID, teamID *uuid.UUID) (bool, error) {
-	var is_leader bool
-	err := r.DB.Select("is_leader").First(is_leader, "user_id = ? AND team_id = ?", userID, teamID).Error
+func (r *repo) IsLeader(ctx context.Context, userID *uuid.UUID, teamID *uuid.UUID) (bool, error) {
+	teamxuser := new(model.TeamXUser)
+
+	err := r.DB.WithContext(ctx).Table("team_x_users").First(teamxuser, "user_id = ? AND team_id = ?", userID, teamID).Error
 
 	if err != nil {
 		return false, err
 	}
 
-	return is_leader, err
+	return teamxuser.IsLeader, err
 
 }
 

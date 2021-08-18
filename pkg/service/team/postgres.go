@@ -71,7 +71,7 @@ func (r *repo) GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser
 	return t, err
 }
 
-func (r *repo) GetTeamMember(ctx context.Context, teamId, userId *uuid.UUID) (*model.TeamXUser, error) {
+func (r *repo) GetTeamMember(ctx context.Context, teamId *uuid.UUID, userId *uuid.UUID) (*model.TeamXUser, error) {
 	var t = new(model.TeamXUser)
 	err := r.DB.WithContext(ctx).
 		First(t, "team_id = ? AND user_id = ?", teamId, userId).Error

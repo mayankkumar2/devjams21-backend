@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/GDGVIT/devjams21-backend/api/schema"
@@ -87,6 +88,7 @@ func GetTeamController(ctx *gin.Context) {
 
 	if !m.IsAccepted {
 		views.ErrorView(e.ErrUnauthorizedNotTeamMember, ctx)
+		fmt.Println("####################")
 		return
 	}
 

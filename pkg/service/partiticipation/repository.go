@@ -8,8 +8,8 @@ import (
 )
 
 type Repository interface {
-	FindByID(id *uuid.UUID) (*model.Participation, error)
-	DeleteParticipation(p *model.Participation) error
-	CreateParticipation(eventId *uuid.UUID, userID *uuid.UUID, teamName string) (*model.Participation, error)
+	FindByID(ctx context.Context, id *uuid.UUID) (*model.Participation, error)
+	DeleteParticipation(ctx context.Context, p *model.Participation) error
+	CreateParticipation(ctx context.Context, eventId *uuid.UUID, userID *uuid.UUID, teamName string) (*model.Participation, error)
 	GetParticipationTeams(ctx context.Context, eventID *uuid.UUID) ([]model.Team, error)
 }
