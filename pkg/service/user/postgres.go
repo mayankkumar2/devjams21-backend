@@ -40,50 +40,32 @@ func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.User, error)
 
 func (r *repo) FindByUID(ctx context.Context, uid string) (*model.User, error) {
 	var usr = new(model.User)
-	return usr, r.DB.WithContext(ctx).First(usr, "uid = ?", uid).Error
+	return usr, r.DB.WithContext(ctx).
+		First(usr, "uid = ?", uid).
+		Error
 }
 
 func (r *repo) GetTeams(ctx context.Context, userID *uuid.UUID) ([]model.Team, error) {
-	var txu []model.TeamXUser
 	var t []model.Team
-	err := r.DB.WithContext(ctx).Table("team_x_users").Find(&txu, "user_id = ?", userID).Error
-
+	err := r.DB.WithContext(ctx).Table("teams").
+		Find(&t, "id IN (SELECT team_id FROM team_x_users WHERE user_id = ?)", userID).
+		Error
 	if err != nil {
 		return nil, err
 	}
-
-	var flag error = nil
-
-	for _, instance := range txu {
-		var team model.Team
-		team_id := instance.TeamID
-		err := r.DB.WithContext(ctx).Table("teams").Find(&team, "id = ?", team_id).Error
-		if err != nil {
-			flag = err
-			break
-		}
-		t = append(t, team)
-	}
-
-	if flag == nil {
-		return t, flag
-	} else {
-		return nil, flag
-	}
-
+	return t, nil
 }
 
 func (r *repo) IsLeader(ctx context.Context, userID *uuid.UUID, teamID *uuid.UUID) (bool, error) {
-	teamxuser := new(model.TeamXUser)
+	teamXUser := new(model.TeamXUser)
 
-	err := r.DB.WithContext(ctx).Table("team_x_users").First(teamxuser, "user_id = ? AND team_id = ?", userID, teamID).Error
-
+	err := r.DB.WithContext(ctx).Table("team_x_users").
+		First(teamXUser, "user_id = ? AND team_id = ?", userID, teamID).
+		Error
 	if err != nil {
 		return false, err
 	}
-
-	return teamxuser.IsLeader, err
-
+	return teamXUser.IsLeader, err
 }
 
 func (r *repo) UpdateAttributes(ctx context.Context, id *uuid.UUID, p map[string]interface{}) error {

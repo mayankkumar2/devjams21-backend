@@ -354,10 +354,9 @@ func CheckTeamFullController(ctx *gin.Context) {
 		return
 	}
 
-	member_count := len(members)
-
-	isFull := int(memberLimit) == member_count
-	isEmpty := int(memberLowerLimit) == member_count
+	memberCount := len(members)
+	isFull := int(memberLimit) == memberCount
+	isEmpty := int(memberLowerLimit) == memberCount
 
 	views.DataView(ctx, http.StatusOK, "success", gin.H{
 		"is_full":  isFull,

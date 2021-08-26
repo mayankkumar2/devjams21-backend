@@ -18,7 +18,7 @@ func NewRepo(db *gorm.DB) Repository {
 	}
 }
 
-// Mayank Kumar's Team For Event
+
 
 func (r *repo) CreateParticipation(ctx context.Context, eventId *uuid.UUID, userID *uuid.UUID, teamName string) (*model.Participation, error) {
 	var p *model.Participation
@@ -51,11 +51,7 @@ func (r *repo) DeleteParticipation(ctx context.Context, p *model.Participation) 
 		if err := tx.Delete(&model.Participation{}).Where("id = ?", p.ID).Error; err != nil {
 			return err
 		}
-		if err := tx.Delete(&model.TeamXUser{}).Where("id = ?", p.TeamID).Error; err != nil {
-			return err
-		}
-		if err := tx.Table("team_x_users").
-			Where("team_id = ?", p.TeamID).Error; err != nil {
+		if err := tx.Delete(&model.TeamXUser{}).Where("team_id = ?", p.TeamID).Error; err != nil {
 			return err
 		}
 		return nil
