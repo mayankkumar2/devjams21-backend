@@ -24,6 +24,7 @@ var ErrHTTPStatusMap = map[error]int{
 	e.ErrUnauthorizedNotTeamLeader: http.StatusUnauthorized,
 	e.ErrUnableToCreateParticipation: http.StatusInternalServerError,
 	e.ErrUserAlreadyRegisteredForEvent: http.StatusConflict,
+	e.ErrTeamAtCapacity: http.StatusConflict,
 }
 
 func ErrorView(err error, c *gin.Context) {

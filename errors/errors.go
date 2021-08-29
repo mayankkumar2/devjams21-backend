@@ -19,4 +19,5 @@ var (
 	ErrRecordNotFound            = errors.New("error: Record not found")
 	ErrUnableToCreateParticipation = errors.New("error: Unable to create participation")
 	ErrUserAlreadyRegisteredForEvent = errors.New("error: User is already registered for an event")
+	ErrTeamAtCapacity = errors.New("error: Team at capacity")
 )

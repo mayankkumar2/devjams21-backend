@@ -176,6 +176,15 @@ func JoinTeamController(ctx *gin.Context) {
 		return
 	}
 
+	if tm, err := db.TeamService.FetchTeamMembers(ctx, t.ID); err != nil {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	} else {
+		if uint(len(tm)) >= (event.MemberLimit) {
+			views.ErrorView(e.ErrTeamAtCapacity, ctx)
+			return
+		}
+	}
 
 	err = db.TeamService.JoinTeam(ctx, t, usr)
 	if err != nil {

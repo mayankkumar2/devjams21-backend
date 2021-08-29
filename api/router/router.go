@@ -33,6 +33,10 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 		participationRouter.GET("/teams", middleware.AuthMiddleware(), middleware.AttachUser, controller.GetTeamsController)
 		participationRouter.POST("/create", middleware.AuthMiddleware(), middleware.AttachUser, controller.CreateParticipationController)
 	}
+	eventRouter := r.Group("/event")
+	{
+		eventRouter.GET("/:event_id", controller.GetEventController)
+	}
 
 
 	r.GET("/", controller.HealthController)
@@ -46,7 +50,7 @@ func RegisterAdminRoutes(r *gin.RouterGroup) {
 		eventRouter.POST("/create", controller.CreateEventController)
 		eventRouter.PUT("/update", controller.UpdateEventController)
 		eventRouter.DELETE("/delete", controller.DeleteEventController)
-		eventRouter.GET("/get", controller.GetEventController)
+		eventRouter.GET("/:event_id", controller.GetEventController)
 	}
 
 	challengeRouter := r.Group("/challenge")

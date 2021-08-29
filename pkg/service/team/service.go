@@ -20,10 +20,15 @@ type Service interface {
 	JoinTeam(ctx context.Context, team *model.Team, usr *model.User) error
 	RemoveFromTeam(ctx context.Context, team *model.Team, usr *model.User) error
 	AcceptJoinRequest(ctx context.Context, team *model.Team, userID *uuid.UUID) error
+	FetchTeamMembers(ctx context.Context, teamId *uuid.UUID) ([]model.TeamXUser, error)
 }
 
 type svc struct {
 	repo Repository
+}
+
+func (s *svc) FetchTeamMembers(ctx context.Context, teamId *uuid.UUID) ([]model.TeamXUser, error) {
+	return s.repo.FetchTeamMembers(ctx, teamId)
 }
 
 func (s *svc) FindByJoinCode(ctx context.Context, code string) (*model.Team, error) {

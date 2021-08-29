@@ -16,5 +16,6 @@ type Repository interface {
 	FindByJoinCode(ctx context.Context, code string) (*model.Team, error)
 	JoinTeam(ctx context.Context, team *model.Team, usr *model.User) error
 	RemoveFromTeam(ctx context.Context, team *model.Team, usr *model.User) error
+	FetchTeamMembers(ctx context.Context, teamId *uuid.UUID) ([]model.TeamXUser, error)
 	AcceptJoinRequest(ctx context.Context, team *model.Team, userID *uuid.UUID) error
 }

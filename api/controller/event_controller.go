@@ -2,6 +2,9 @@ package controller
 
 import (
 	"fmt"
+	"github.com/GDGVIT/devjams21-backend/errors"
+	"github.com/GDGVIT/devjams21-backend/pkg/model"
+	"github.com/google/uuid"
 	"net/http"
 
 	"github.com/GDGVIT/devjams21-backend/api/schema"
@@ -66,19 +69,39 @@ func DeleteEventController(ctx *gin.Context) {
 }
 
 func GetEventController(ctx *gin.Context) {
-	payload := new(schema.GetEventRequest)
-	if err := ctx.BindJSON(payload); err != nil {
-		sentry.CaptureException(err)
+	eventIdValue := ctx.Param("event_id")
+	eventId, err := uuid.Parse(eventIdValue)
+	if err != nil {
+		views.ErrorView(errors.ErrBadPayloadFormat, ctx)
 		return
 	}
 
-	event, err := db.EventService.GetEvent(ctx, payload.ID)
+	event, err := db.EventService.GetEvent(ctx, &eventId)
 
 	if err != nil {
 		sentry.CaptureException(err)
 		views.ErrorView(err, ctx)
 		return
 	}
-
-	views.DataView(ctx, http.StatusOK, "success", event)
+	isReg := false
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		sentry.CaptureException(err)
+		views.ErrorView(errors.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+	c, err := db.ParticipationService.IsUserParticipatingInEvent(ctx, event.ID, usr.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(errors.ErrUnexpected, ctx)
+		return
+	}
+	if *c >= 1 {
+		isReg = true
+	}
+	views.DataView(ctx, http.StatusOK, "success", gin.H{
+		"event":event,
+		"is_registered": isReg,
+	})
 }
