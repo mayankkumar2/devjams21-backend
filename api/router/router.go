@@ -31,6 +31,7 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 
 	participationRouter := r.Group("/participation")
 	{
+		participationRouter.DELETE("/remove", middleware.AuthMiddleware(), middleware.AttachUser, controller.DeleteParticipationController)
 		participationRouter.GET("/teams", middleware.AuthMiddleware(), middleware.AttachUser, controller.GetTeamsController)
 		participationRouter.POST("/create", middleware.AuthMiddleware(), middleware.AttachUser, controller.CreateParticipationController)
 	}

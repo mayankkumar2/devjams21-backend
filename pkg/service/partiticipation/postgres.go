@@ -66,7 +66,9 @@ func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.Participatio
 func (r *repo) GetParticipationTeams(ctx context.Context, eventID *uuid.UUID) ([]model.Team, error) {
 	var teams []model.Team
 
-	err := r.DB.WithContext(ctx).Find(teams, "event_id = ?", eventID).Error
+	err := r.DB.WithContext(ctx).
+		Joins("TeamXUser").
+		Find(teams, "event_id = ?", eventID).Error
 
 	if err != nil {
 		return nil, err

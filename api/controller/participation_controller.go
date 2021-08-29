@@ -3,6 +3,7 @@ package controller
 import (
 	e "github.com/GDGVIT/devjams21-backend/errors"
 	"github.com/GDGVIT/devjams21-backend/pkg/model"
+	"gorm.io/gorm"
 	"net/http"
 
 	"github.com/GDGVIT/devjams21-backend/api/views"
@@ -75,3 +76,55 @@ func CreateParticipationController(ctx *gin.Context) {
 	views.DataView(ctx, http.StatusCreated, "created participation", p)
 }
 
+func DeleteParticipationController(ctx *gin.Context)  {
+	payload := new(struct{
+		ParticipationID *uuid.UUID `json:"participation_id"`
+	})
+	if err := ctx.BindJSON(payload); err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+
+	p, err := db.ParticipationService.FindByID(ctx, payload.ParticipationID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(err, ctx)
+			return
+		} else {
+			sentry.CaptureException(err)
+			views.ErrorView(e.ErrUnexpected, ctx)
+			return
+		}
+	}
+
+	teamMember, err := db.TeamService.GetTeamMember(ctx, p.TeamID, usr.ID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrTeamNotFound, ctx)
+			return
+		} else {
+			sentry.CaptureException(err)
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+	if !teamMember.IsLeader {
+		views.ErrorView(e.ErrUnauthorizedNotTeamLeader, ctx)
+		return
+	}
+	err = db.ParticipationService.DeleteParticipation(ctx, p)
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+
+	views.DataView(ctx, http.StatusOK, "deleted participation", p)
+}

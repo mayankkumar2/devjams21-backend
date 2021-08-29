@@ -11,6 +11,6 @@ type TeamXUser struct {
 	IsLeader   bool       `json:"is_leader"`
 	IsAccepted bool       `json:"is_accepted"`
 	CreatedAt  *time.Time `json:"created_at"`
-	Team       *Team      `json:"team,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	//Team       *Team      `json:"team,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	User       *User      `json:"user,omitempty"`
 }
