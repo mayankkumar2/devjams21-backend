@@ -7,4 +7,5 @@ type User struct {
 	Email   string `json:"email" gorm:"type:varchar(100);uniqueIndex"`
 	RegNo   string `json:"reg_no,omitempty" gorm:"type:varchar(20)"`
 	College string `json:"college" gorm:"type:varchar(100)"`
+	PhotoUrl string `json:"photo_url" gorm:"type:varchar(200)"`
 }

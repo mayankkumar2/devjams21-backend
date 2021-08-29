@@ -85,7 +85,10 @@ func (r *repo) GetTeamMember(ctx context.Context, teamId *uuid.UUID, userId *uui
 	}
 	return t, err
 }
-
+func (r *repo) UpdateTeamName(ctx context.Context, teamId *uuid.UUID, teamName string) error {
+	return r.DB.WithContext(ctx).Model(&model.Team{}).Where("id = ?", teamId).
+		Update("TeamName", teamName).Error
+}
 func (r *repo) CreateTeam(ctx context.Context, usr *model.User, teamName string) (*model.Team, error) {
 	t := new(model.Team)
 	err := r.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {

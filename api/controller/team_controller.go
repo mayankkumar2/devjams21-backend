@@ -60,6 +60,50 @@ func UpdateTeamCodeController(ctx *gin.Context) {
 	views.DataView(ctx, http.StatusOK, "success", gin.H{})
 }
 
+func UpdateTeamNameController(ctx *gin.Context) {
+	payload := new(schema.UpdateTeamNameRequest)
+	if err := ctx.BindJSON(payload); err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+	m, err := db.TeamService.GetTeamMember(ctx, payload.ID, usr.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrUnauthorizedNotTeamMember, ctx)
+		} else {
+			views.ErrorView(e.ErrUnexpected, ctx)
+		}
+		return
+	}
+
+	if !m.IsLeader {
+		views.ErrorView(e.ErrUnauthorizedNotTeamLeader, ctx)
+		return
+	}
+	t, err := db.TeamService.FindByID(ctx, payload.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+
+	if err := db.TeamService.UpdateTeamName(ctx, t.ID, payload.Name); err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+	views.DataView(ctx, http.StatusOK, "success", gin.H{})
+}
+
 func GetTeamController(ctx *gin.Context) {
 	payload := new(schema.FindTeamRequest)
 	if err := ctx.BindQuery(payload); err != nil {

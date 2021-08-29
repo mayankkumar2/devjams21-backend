@@ -28,6 +28,7 @@ func (r *repo) CreateUser(ctx context.Context, record *auth.UserRecord, req *sch
 		Email:   record.Email,
 		RegNo:   req.Meta.RegNo,
 		College: req.Meta.College,
+		PhotoUrl: record.PhotoURL,
 	}
 	return usr, db.Create(&usr).Error
 }

@@ -21,10 +21,15 @@ type Service interface {
 	RemoveFromTeam(ctx context.Context, team *model.Team, usr *model.User) error
 	AcceptJoinRequest(ctx context.Context, team *model.Team, userID *uuid.UUID) error
 	FetchTeamMembers(ctx context.Context, teamId *uuid.UUID) ([]model.TeamXUser, error)
+	UpdateTeamName(ctx context.Context, teamId *uuid.UUID, teamName string) error
 }
 
 type svc struct {
 	repo Repository
+}
+
+func (s *svc) UpdateTeamName(ctx context.Context, teamId *uuid.UUID, teamName string) error {
+	return s.repo.UpdateTeamName(ctx, teamId, teamName)
 }
 
 func (s *svc) FetchTeamMembers(ctx context.Context, teamId *uuid.UUID) ([]model.TeamXUser, error) {

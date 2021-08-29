@@ -29,7 +29,6 @@ func CreateUserController(ctx *gin.Context) {
 		views.ErrorView(e.ErrUserInvalidIDToken, ctx)
 		return
 	}
-
 	usr, err := db.UserService.CreateUser(ctx, usrRec, payload)
 	if err != nil {
 		sentry.CaptureException(err)

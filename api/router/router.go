@@ -23,6 +23,7 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 		teamRouter.GET("/fetch", middleware.AuthMiddleware(), middleware.AttachUser, controller.GetTeamController)
 		teamRouter.POST("/create", middleware.AuthMiddleware(), middleware.AttachUser, controller.CreateTeamController)
 		teamRouter.PATCH("/joinCode/update", middleware.AuthMiddleware(), middleware.AttachUser, controller.UpdateTeamCodeController)
+		teamRouter.PATCH("/teamName", middleware.AuthMiddleware(), middleware.AttachUser, controller.UpdateTeamNameController)
 		teamRouter.POST("/join", middleware.AuthMiddleware(), middleware.AttachUser, controller.JoinTeamController)
 		teamRouter.DELETE("/leave", middleware.AuthMiddleware(), middleware.AttachUser, controller.LeaveTeamController)
 		teamRouter.DELETE("/member/remove", middleware.AuthMiddleware(), middleware.AttachUser, controller.RemoveMemberController)
