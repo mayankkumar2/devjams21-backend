@@ -37,6 +37,10 @@ func (r *repo) GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error
 	}
 	return e, err
 }
+func (r *repo) GetAllEvent(ctx context.Context) ([]model.Event, error) {
+	events := make([]model.Event, 0, 100)
+	return events, r.DB.WithContext(ctx).Find(&events).Error
+}
 
 func (r *repo) GetEventByTeamID(ctx context.Context, teamID *uuid.UUID) (*model.Event, error) {
 	e := new(model.Event)

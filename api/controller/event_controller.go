@@ -77,7 +77,6 @@ func GetEventController(ctx *gin.Context) {
 	}
 
 	event, err := db.EventService.GetEvent(ctx, &eventId)
-
 	if err != nil {
 		sentry.CaptureException(err)
 		views.ErrorView(err, ctx)
@@ -106,3 +105,12 @@ func GetEventController(ctx *gin.Context) {
 	})
 }
 
+func GetAllEventsController(ctx *gin.Context) {
+	events, err := db.EventService.GetAllEvent(ctx)
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(errors.ErrUnexpected, ctx)
+		return
+	}
+	views.DataView(ctx, http.StatusOK, "success", events)
+}

@@ -9,6 +9,7 @@ import (
 )
 
 type Service interface {
+	GetAllEvent(ctx context.Context) ([]model.Event, error)
 	GetEventByTeamID(ctx context.Context, teamID *uuid.UUID) (*model.Event, error)
 	CreateEvent(ctx context.Context, payload *schema.CreateEventRequest) (*model.Event, error)
 	GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error)
@@ -18,6 +19,10 @@ type Service interface {
 
 type svc struct {
 	repo Repository
+}
+
+func (s *svc) GetAllEvent(ctx context.Context) ([]model.Event, error) {
+	return s.repo.GetAllEvent(ctx)
 }
 
 func (s *svc) GetEventByTeamID(ctx context.Context, teamID *uuid.UUID) (*model.Event, error) {

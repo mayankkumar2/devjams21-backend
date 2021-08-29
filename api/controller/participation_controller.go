@@ -14,19 +14,31 @@ import (
 )
 
 func GetTeamsController(ctx *gin.Context) {
-	payload := new(struct {
-		EventID *uuid.UUID `json:"event_id"`
-	})
-
-	if err := ctx.BindJSON(payload); err != nil {
-		sentry.CaptureException(err)
+	eventIdValue := ctx.Param("event_id")
+	eventId, err := uuid.Parse(eventIdValue)
+	if err != nil {
+		views.ErrorView(e.ErrBadPayloadFormat, ctx)
 		return
 	}
-	teams, err := db.ParticipationService.GetParticipationTeams(ctx, payload.EventID)
+
+	teams, err := db.ParticipationService.GetParticipationTeams(ctx, &eventId)
 	if err != nil {
 		views.ErrorView(err, ctx)
 		sentry.CaptureException(err)
 		return
+	}
+	for i := range teams {
+		m := make([]model.TeamXUser, 0, 100)
+		for j := range teams[i].TeamXUser {
+			if teams[i].TeamXUser[j].User != nil {
+				teams[i].TeamXUser[j].User.RegNo = ""
+			}
+
+			if teams[i].TeamXUser[j].IsAccepted {
+				m = append(m, teams[i].TeamXUser[j])
+			}
+		}
+		teams[i].TeamXUser = m
 	}
 
 	views.DataView(ctx, http.StatusOK, "success", gin.H{
@@ -66,7 +78,7 @@ func CreateParticipationController(ctx *gin.Context) {
 		return
 	}
 
-	p, err := db.ParticipationService.CreateParticipation(ctx, payload.EventID, usr.ID, GenerateTeamName(usr.Name))
+	p, err := db.ParticipationService.CreateParticipation(ctx, payload.EventID, usr.ID, GenerateTeamName(usr.Email))
 	if err != nil {
 		sentry.CaptureException(err)
 		views.ErrorView(e.ErrUnableToCreateParticipation, ctx)

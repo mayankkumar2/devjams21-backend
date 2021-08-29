@@ -132,17 +132,13 @@ func UserLoginController(ctx *gin.Context) {
 }
 
 func UserTeamsController(ctx *gin.Context) {
-	payload := new(struct {
-		UserID *uuid.UUID `json:"user_id"`
-	})
-
-	if err := ctx.BindJSON(payload); err != nil {
-		sentry.CaptureException(err)
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
 		return
 	}
-
-	teams, err := db.UserService.GetTeams(ctx, payload.UserID)
-
+	usr := userValue.(*model.User)
+	teams, err := db.UserService.GetTeams(ctx, usr.ID)
 	if err != nil {
 		views.ErrorView(err, ctx)
 		sentry.CaptureException(err)

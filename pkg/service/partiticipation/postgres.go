@@ -2,6 +2,7 @@ package participation
 
 import (
 	"context"
+	"github.com/GDGVIT/devjams21-backend/pkg/util"
 
 	"github.com/GDGVIT/devjams21-backend/pkg/model"
 	"github.com/google/uuid"
@@ -26,8 +27,11 @@ func (r *repo) CreateParticipation(ctx context.Context, eventId *uuid.UUID, user
 		p = &model.Participation{
 			Team: &model.Team{
 				TeamName: teamName,
+				JoinCode: util.RandStringRunes(32),
 			},
-			Submission: &model.Submission{},
+			Submission: &model.Submission{
+				Meta: model.JSON(map[string]interface{}{}),
+			},
 			EventID:    eventId,
 		}
 		if err := tx.Create(p).Error; err != nil {
@@ -48,10 +52,10 @@ func (r *repo) CreateParticipation(ctx context.Context, eventId *uuid.UUID, user
 
 func (r *repo) DeleteParticipation(ctx context.Context, p *model.Participation) error {
 	return r.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.Participation{}).Where("id = ?", p.ID).Error; err != nil {
+		if err := tx.Where("id = ?", p.ID).Delete(&model.Participation{}).Error; err != nil {
 			return err
 		}
-		if err := tx.Delete(&model.TeamXUser{}).Where("team_id = ?", p.TeamID).Error; err != nil {
+		if err := tx.Where("team_id = ?", p.TeamID).Delete(&model.TeamXUser{}).Error; err != nil {
 			return err
 		}
 		return nil
@@ -64,11 +68,11 @@ func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.Participatio
 }
 
 func (r *repo) GetParticipationTeams(ctx context.Context, eventID *uuid.UUID) ([]model.Team, error) {
-	var teams []model.Team
+	var teams = make([]model.Team, 0,100)
 
 	err := r.DB.WithContext(ctx).
-		Joins("TeamXUser").
-		Find(teams, "event_id = ?", eventID).Error
+		Preload("TeamXUser.User").
+		Find(&teams, "id IN (SELECT team_id FROM participations WHERE event_id = ?)", eventID).Error
 
 	if err != nil {
 		return nil, err

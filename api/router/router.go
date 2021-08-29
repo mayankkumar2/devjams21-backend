@@ -15,7 +15,7 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 		usrRouter.PATCH("/update", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserProfileUpdateController)
 		usrRouter.GET("/teams", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserTeamsController)
 		usrRouter.GET("/leader", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserLeaderController)
-		usrRouter.GET("/participation", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserParticipationController)
+		usrRouter.GET("/participation",middleware.AuthMiddleware(),middleware.AttachUser,controller.UserParticipationController)
 	}
 
 	teamRouter := r.Group("/team")
@@ -26,18 +26,19 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 		teamRouter.POST("/join", middleware.AuthMiddleware(), middleware.AttachUser, controller.JoinTeamController)
 		teamRouter.DELETE("/leave", middleware.AuthMiddleware(), middleware.AttachUser, controller.LeaveTeamController)
 		teamRouter.DELETE("/member/remove", middleware.AuthMiddleware(), middleware.AttachUser, controller.RemoveMemberController)
-		teamRouter.DELETE("/member/accept", middleware.AuthMiddleware(), middleware.AttachUser, controller.AcceptMemberRequestController)
+		teamRouter.PATCH("/member/accept", middleware.AuthMiddleware(), middleware.AttachUser, controller.AcceptMemberRequestController)
 	}
 
 	participationRouter := r.Group("/participation")
 	{
 		participationRouter.DELETE("/remove", middleware.AuthMiddleware(), middleware.AttachUser, controller.DeleteParticipationController)
-		participationRouter.GET("/teams", middleware.AuthMiddleware(), middleware.AttachUser, controller.GetTeamsController)
+		participationRouter.GET("/teams/:event_id", controller.GetTeamsController)
 		participationRouter.POST("/create", middleware.AuthMiddleware(), middleware.AttachUser, controller.CreateParticipationController)
 	}
 	eventRouter := r.Group("/event")
 	{
-		eventRouter.GET("/:event_id", controller.GetEventController)
+		eventRouter.GET("/all", controller.GetAllEventsController)
+		eventRouter.GET("/fetch/:event_id", middleware.AuthMiddleware(), middleware.AttachUser, controller.GetEventController)
 	}
 
 

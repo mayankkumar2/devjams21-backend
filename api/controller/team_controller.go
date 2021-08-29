@@ -109,6 +109,7 @@ func GetTeamController(ctx *gin.Context) {
 			"team_details": t,
 			"user_details": m,
 			"members":      members,
+			"join_code": t.JoinCode,
 		},
 	})
 }
@@ -180,7 +181,13 @@ func JoinTeamController(ctx *gin.Context) {
 		views.ErrorView(e.ErrUnexpected, ctx)
 		return
 	} else {
-		if uint(len(tm)) >= (event.MemberLimit) {
+		memberCount := 0
+		for _, t := range tm {
+			if t.IsAccepted {
+				memberCount++
+			}
+		}
+		if uint(memberCount) >= (event.MemberLimit) {
 			views.ErrorView(e.ErrTeamAtCapacity, ctx)
 			return
 		}
@@ -275,6 +282,12 @@ func RemoveMemberController(ctx *gin.Context) {
 		views.ErrorView(e.ErrUnauthorizedNotTeamLeader, ctx)
 		return
 	}
+
+	if usr.ID.String() == payload.MemberID.String() {
+		views.ErrorView(e.ErrTeamLeaderMandatory, ctx)
+		return
+	}
+
 	t, err := db.TeamService.FindByID(ctx, payload.ID)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -285,7 +298,8 @@ func RemoveMemberController(ctx *gin.Context) {
 		}
 		return
 	}
-	u, err := db.UserService.FindByID(ctx, payload.ID)
+
+	u, err := db.UserService.FindByID(ctx, payload.MemberID)
 	if err != nil {
 		views.ErrorView(e.ErrUserNotFound, ctx)
 		return
