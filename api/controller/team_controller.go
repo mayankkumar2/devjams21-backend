@@ -156,6 +156,27 @@ func JoinTeamController(ctx *gin.Context) {
 		return
 	}
 
+	event, err := db.EventService.GetEventByTeamID(ctx, t.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		// custom error required here
+		views.ErrorView(err, ctx)
+		return
+	}
+
+	c, err := db.ParticipationService.IsUserParticipatingInEvent(ctx, event.ID, usr.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+
+	if *c >= 1 {
+		views.ErrorView(e.ErrUserAlreadyRegisteredForEvent, ctx)
+		return
+	}
+
+
 	err = db.TeamService.JoinTeam(ctx, t, usr)
 	if err != nil {
 		sentry.CaptureException(err)

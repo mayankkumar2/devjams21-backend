@@ -74,3 +74,14 @@ func (r *repo) GetParticipationTeams(ctx context.Context, eventID *uuid.UUID) ([
 
 	return teams, err
 }
+
+func (r *repo) IsUserParticipatingInEvent(ctx context.Context, eventId, userId *uuid.UUID) (*int64, error){
+	c := new(int64)
+	return c, r.DB.WithContext(ctx).
+		Table("participations").
+		Joins("JOIN teams t on t.id = participations.team_id").
+		Joins("JOIN team_x_users txu on t.id = txu.team_id and t.id = txu.team_id").
+		Where("user_id = ?  AND event_id = ?", userId, eventId).Count(c).Error
+}
+
+

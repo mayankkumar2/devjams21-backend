@@ -8,8 +8,11 @@ import (
 )
 
 type Service interface {
+	// FindByID finds a team by its id
 	FindByID(ctx context.Context, id *uuid.UUID) (*model.Team, error)
+	// CreateTeam creates a team with usr and teamName supplied
 	CreateTeam(ctx context.Context, usr *model.User, teamName string) (*model.Team, error)
+	// GetMembers gets the members of a team
 	GetMembers(ctx context.Context, id *uuid.UUID) ([]model.TeamXUser, error)
 	GetTeamMember(ctx context.Context, teamId, userId *uuid.UUID) (*model.TeamXUser, error)
 	UpdateTeamCode(ctx context.Context, team *model.Team) error

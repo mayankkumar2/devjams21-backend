@@ -22,6 +22,8 @@ var ErrHTTPStatusMap = map[error]int{
 	gorm.ErrRecordNotFound:         http.StatusNotFound,
 	e.ErrUnauthorizedNotTeamMember: http.StatusUnauthorized,
 	e.ErrUnauthorizedNotTeamLeader: http.StatusUnauthorized,
+	e.ErrUnableToCreateParticipation: http.StatusInternalServerError,
+	e.ErrUserAlreadyRegisteredForEvent: http.StatusConflict,
 }
 
 func ErrorView(err error, c *gin.Context) {

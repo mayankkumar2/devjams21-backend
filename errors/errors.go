@@ -17,4 +17,6 @@ var (
 	ErrUserNotFound              = errors.New("error: User not found")
 	ErrJoinRequestNotFound       = errors.New("error: Team join request not found")
 	ErrRecordNotFound            = errors.New("error: Record not found")
+	ErrUnableToCreateParticipation = errors.New("error: Unable to create participation")
+	ErrUserAlreadyRegisteredForEvent = errors.New("error: User is already registered for an event")
 )

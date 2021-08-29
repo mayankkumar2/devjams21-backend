@@ -14,9 +14,7 @@ type repo struct {
 }
 
 func (r *repo) CreateEvent(ctx context.Context, payload *schema.CreateEventRequest) (*model.Event, error) {
-
 	db := r.DB.WithContext(ctx)
-
 	event := &model.Event{
 		EventName:        payload.EventName,
 		Start:            payload.Start,
@@ -34,6 +32,17 @@ func (r *repo) CreateEvent(ctx context.Context, payload *schema.CreateEventReque
 func (r *repo) GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error) {
 	e := new(model.Event)
 	err := r.DB.WithContext(ctx).First(e, "id = ?", ID).Error
+	if err != nil {
+		return nil, err
+	}
+	return e, err
+}
+
+func (r *repo) GetEventByTeamID(ctx context.Context, teamID *uuid.UUID) (*model.Event, error) {
+	e := new(model.Event)
+	err := r.DB.WithContext(ctx).
+		First(
+			e, "id IN (SELECT event_id FROM participations p WHERE p.team_id = ? )", teamID).Error
 	if err != nil {
 		return nil, err
 	}
