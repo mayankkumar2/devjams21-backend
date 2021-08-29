@@ -10,6 +10,7 @@ import (
 )
 
 const identityKey = "id"
+
 var jwtMW *jwt.GinJWTMiddleware
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -39,7 +40,7 @@ func AuthMiddleware() gin.HandlerFunc {
 }
 
 func Token(id *uuid.UUID) (string, time.Time, error) {
-	return jwtMW.TokenGenerator(map[string] string {
+	return jwtMW.TokenGenerator(map[string]string{
 		"id": id.String(),
 	})
 }

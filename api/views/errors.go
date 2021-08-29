@@ -2,22 +2,29 @@ package views
 
 import (
 	"database/sql/driver"
+	"net/http"
+
 	e "github.com/GDGVIT/devjams21-backend/errors"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 var ErrHTTPStatusMap = map[error]int{
-	e.ErrMethodNotAllowed:   http.StatusMethodNotAllowed,
-	e.ErrInvalidToken:       http.StatusBadRequest,
-	e.ErrUserExists:         http.StatusConflict,
-	driver.ErrBadConn:       http.StatusServiceUnavailable,
-	gorm.ErrInvalidDB:       http.StatusServiceUnavailable,
-	e.ErrBadPayloadFormat:   http.StatusUnprocessableEntity,
-	e.ErrUserInvalidIDToken: http.StatusUnauthorized,
-	e.ErrUserCreateErr:      http.StatusServiceUnavailable,
+	e.ErrMethodNotAllowed:          http.StatusMethodNotAllowed,
+	e.ErrInvalidToken:              http.StatusBadRequest,
+	e.ErrUserExists:                http.StatusConflict,
+	driver.ErrBadConn:              http.StatusServiceUnavailable,
+	gorm.ErrInvalidDB:              http.StatusServiceUnavailable,
+	e.ErrBadPayloadFormat:          http.StatusUnprocessableEntity,
+	e.ErrUserInvalidIDToken:        http.StatusUnauthorized,
+	e.ErrUserCreateErr:             http.StatusServiceUnavailable,
+	gorm.ErrRecordNotFound:         http.StatusNotFound,
+	e.ErrUnauthorizedNotTeamMember: http.StatusUnauthorized,
+	e.ErrUnauthorizedNotTeamLeader: http.StatusUnauthorized,
+	e.ErrUnableToCreateParticipation: http.StatusInternalServerError,
+	e.ErrUserAlreadyRegisteredForEvent: http.StatusConflict,
+	e.ErrTeamAtCapacity: http.StatusConflict,
 }
 
 func ErrorView(err error, c *gin.Context) {
