@@ -177,3 +177,22 @@ func UserLeaderController(ctx *gin.Context) {
 		"is_leader": isleader,
 	})
 }
+
+
+func UserParticipationController(ctx *gin.Context) {
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+	p, err := db.UserService.MyParticipation(ctx, usr.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	views.DataView(ctx, http.StatusOK, "success", gin.H{
+		"my_participation": p,
+	})
+}

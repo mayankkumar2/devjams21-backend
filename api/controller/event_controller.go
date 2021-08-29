@@ -105,3 +105,4 @@ func GetEventController(ctx *gin.Context) {
 		"is_registered": isReg,
 	})
 }
+

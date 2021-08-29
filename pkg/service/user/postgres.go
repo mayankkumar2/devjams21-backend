@@ -75,3 +75,16 @@ func (r *repo) UpdateAttributes(ctx context.Context, id *uuid.UUID, p map[string
 		},
 	}).Updates(p).Error
 }
+
+func (r *repo) MyParticipation(ctx context.Context, userId *uuid.UUID) ([]model.Participation, error) {
+
+	m := make([]model.Participation, 0, 100)
+
+	return m, r.DB.WithContext(ctx).
+		Joins("Event").
+		Joins("Team").
+		Find(
+			&m,
+			"team_id IN (SELECT id FROM teams JOIN team_x_users txu ON teams.id=txu.team_id AND  user_id = ?)",
+			userId).Error
+}

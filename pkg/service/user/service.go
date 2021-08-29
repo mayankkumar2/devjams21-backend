@@ -10,6 +10,7 @@ import (
 )
 
 type Service interface {
+	MyParticipation(ctx context.Context, userId *uuid.UUID) ([]model.Participation, error)
 	CreateUser(ctx context.Context, record *auth.UserRecord, req *schema.CreateUserRequest) (*model.User, error)
 	FindByID(ctx context.Context, id *uuid.UUID) (*model.User, error)
 	UpdateAttributes(ctx context.Context, id *uuid.UUID, p map[string]interface{}) error
@@ -20,6 +21,10 @@ type Service interface {
 
 type svc struct {
 	repo Repository
+}
+
+func (s *svc) MyParticipation(ctx context.Context, userId *uuid.UUID) ([]model.Participation, error) {
+	return s.repo.MyParticipation(ctx, userId)
 }
 
 func (s *svc) FindByUID(ctx context.Context, uid string) (*model.User, error) {

@@ -15,6 +15,7 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 		usrRouter.PATCH("/update", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserProfileUpdateController)
 		usrRouter.GET("/teams", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserTeamsController)
 		usrRouter.GET("/leader", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserLeaderController)
+		usrRouter.GET("/participation", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserParticipationController)
 	}
 
 	teamRouter := r.Group("/team")

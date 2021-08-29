@@ -74,3 +74,4 @@ func CreateParticipationController(ctx *gin.Context) {
 
 	views.DataView(ctx, http.StatusCreated, "created participation", p)
 }
+

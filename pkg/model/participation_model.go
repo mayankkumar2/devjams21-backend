@@ -12,4 +12,5 @@ type Participation struct {
 	Submission   *Submission `json:"submission,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	ChallengeID  *uuid.UUID  `json:"challenge_id"`
 	Challenge    *Challenge  `json:"challenge,omitempty"`
+	Score 		int64 `json:"-"`
 }

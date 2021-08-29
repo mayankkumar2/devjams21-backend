@@ -10,6 +10,7 @@ import (
 )
 
 type Repository interface {
+	MyParticipation(ctx context.Context, userId *uuid.UUID) ([]model.Participation, error)
 	CreateUser(ctx context.Context, record *auth.UserRecord, req *schema.CreateUserRequest) (*model.User, error)
 	FindByID(ctx context.Context, id *uuid.UUID) (*model.User, error)
 	UpdateAttributes(ctx context.Context, id *uuid.UUID, p map[string]interface{}) error
