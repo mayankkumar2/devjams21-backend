@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/GDGVIT/devjams21-backend/api/schema"
 	"github.com/GDGVIT/devjams21-backend/api/views"
@@ -203,9 +204,18 @@ func JoinTeamController(ctx *gin.Context) {
 
 	event, err := db.EventService.GetEventByTeamID(ctx, t.ID)
 	if err != nil {
-		sentry.CaptureException(err)
-		// custom error required here
-		views.ErrorView(err, ctx)
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrRecordNotFound, ctx)
+			return
+		} else {
+			sentry.CaptureException(err)
+			views.ErrorView(e.ErrUnexpected, ctx)
+			return
+		}
+	}
+
+	if event.RSVPEnd.Unix() < time.Now().Unix() {
+		views.ErrorView(e.ErrEventRSVPExpired, ctx)
 		return
 	}
 

@@ -20,4 +20,5 @@ var (
 	ErrUnableToCreateParticipation = errors.New("error: Unable to create participation")
 	ErrUserAlreadyRegisteredForEvent = errors.New("error: User is already registered for an event")
 	ErrTeamAtCapacity = errors.New("error: Team at capacity")
+	ErrEventRSVPExpired = errors.New("error : Event RSVP end time expired")
 )
