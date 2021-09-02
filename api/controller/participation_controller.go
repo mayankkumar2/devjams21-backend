@@ -5,6 +5,7 @@ import (
 	"github.com/GDGVIT/devjams21-backend/pkg/model"
 	"gorm.io/gorm"
 	"net/http"
+	"time"
 
 	"github.com/GDGVIT/devjams21-backend/api/views"
 	"github.com/GDGVIT/devjams21-backend/db"
@@ -75,6 +76,22 @@ func CreateParticipationController(ctx *gin.Context) {
 
 	if *c >= 1 {
 		views.ErrorView(e.ErrUserAlreadyRegisteredForEvent, ctx)
+		return
+	}
+
+	event, err := db.EventService.GetEvent(ctx, payload.EventID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			views.ErrorView(e.ErrRecordNotFound, ctx)
+			return
+		} else {
+			views.ErrorView(e.ErrUnexpected, ctx)
+			return
+		}
+	}
+
+	if event.RSVPEnd.Unix() < time.Now().Unix() {
+		views.ErrorView(e.ErrEventRSVPExpired, ctx)
 		return
 	}
 

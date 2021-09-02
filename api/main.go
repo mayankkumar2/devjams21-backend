@@ -6,6 +6,7 @@ import (
 	"github.com/GDGVIT/devjams21-backend/pkg/firebaseUtil"
 	"github.com/GDGVIT/devjams21-backend/pkg/sentryUtil"
 	"github.com/getsentry/sentry-go"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	log "github.com/sirupsen/logrus"
@@ -48,6 +49,8 @@ func main() {
 
 	port := os.Getenv("PORT")
 	conn := "0.0.0.0:" + port
+	// attach cors
+	r.Use(cors.New(cors.DefaultConfig()))
 
 	log.Printf("Server running on %s", conn)
 	log.Fatal(r.Run(conn))
