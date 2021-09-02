@@ -39,6 +39,7 @@ func main() {
 	sentryUtil.InitSentry()
 	defer sentry.Flush(2 * time.Second)
 	r := gin.Default()
+	r.Use(cors.Default())
 	api := r.Group("api")
 	if os.Getenv("DEPLOYMENT") == "PUBLIC" {
 		router.RegisterPublicRoutes(api)
@@ -49,11 +50,6 @@ func main() {
 
 	port := os.Getenv("PORT")
 	conn := "0.0.0.0:" + port
-	// attach cors
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowAllOrigins = true
-	r.Use(cors.New(corsConfig))
-
 	log.Printf("Server running on %s", conn)
 	log.Fatal(r.Run(conn))
 }
