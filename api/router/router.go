@@ -49,6 +49,8 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 		submissionRouter.PATCH("/update", middleware.AuthMiddleware(), middleware.AttachUser, controller.SaveSubmission)
 	}
 
+	r.GET("/leaderboard", controller.GetLeaderboard)
+
 	r.GET("/", controller.HealthController)
 	r.GET("/health", controller.HealthController)
 }
