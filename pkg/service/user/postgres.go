@@ -20,6 +20,11 @@ func NewUserRepo(db *gorm.DB) Repository {
 	}
 }
 
+func (r *repo) FindMessages(ctx context.Context, userID *uuid.UUID) ([]model.MessageBoard, error) {
+	msg := make([]model.MessageBoard, 0, 100)
+	return msg, r.DB.WithContext(ctx).Where("user_id = ?", userID).Table("message_boards").Find(&msg).Error
+}
+
 func (r *repo) CreateUser(ctx context.Context, record *auth.UserRecord, req *schema.CreateUserRequest) (*model.User, error) {
 	db := r.DB.WithContext(ctx)
 	usr := &model.User{
@@ -46,6 +51,8 @@ func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.User, error)
 	return usr, r.DB.WithContext(ctx).
 		First(usr, "id = ?", id.String()).Error
 }
+
+
 
 func (r *repo) FindByUID(ctx context.Context, uid string) (*model.User, error) {
 	var usr = new(model.User)

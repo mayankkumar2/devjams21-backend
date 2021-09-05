@@ -9,6 +9,7 @@ import (
 func RegisterPublicRoutes(r *gin.RouterGroup) {
 	usrRouter := r.Group("/user")
 	{
+		usrRouter.GET("/message", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserMessagesController)
 		usrRouter.POST("/create", controller.CreateUserController)
 		usrRouter.POST("/login", controller.UserLoginController)
 		usrRouter.GET("/profile", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserProfileController)
@@ -69,5 +70,9 @@ func RegisterAdminRoutes(r *gin.RouterGroup) {
 		challengeRouter.PUT("/update", controller.UpdateChallengeController)
 		challengeRouter.DELETE("/delete", controller.DeleteChallengeController)
 	}
-
+	messageRouter := r.Group("/message")
+	{
+		messageRouter.POST("/team", controller.SendMessageToTeam)
+		messageRouter.POST("/user", controller.SendMessageToOne)
+	}
 }

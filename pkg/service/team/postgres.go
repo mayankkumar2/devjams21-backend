@@ -20,7 +20,7 @@ func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.Team, error)
 
 func (r *repo) FetchTeamMembers(ctx context.Context, teamId *uuid.UUID) ([]model.TeamXUser, error) {
 	var tm = make([]model.TeamXUser, 0, 100)
-	return tm, r.DB.WithContext(ctx).Where("team_id = ?", teamId).Find(&tm).Error
+	return tm, r.DB.WithContext(ctx).Where("team_id = ?", teamId).Joins("User").Find(&tm).Error
 }
 
 func (r *repo) FindByJoinCode(ctx context.Context, code string) (*model.Team, error) {
