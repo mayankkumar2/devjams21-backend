@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"time"
 
 	"firebase.google.com/go/auth"
 	"github.com/GDGVIT/devjams21-backend/api/schema"
@@ -22,7 +23,9 @@ func NewUserRepo(db *gorm.DB) Repository {
 
 func (r *repo) FindMessages(ctx context.Context, userID *uuid.UUID) ([]model.MessageBoard, error) {
 	msg := make([]model.MessageBoard, 0, 100)
-	return msg, r.DB.WithContext(ctx).Where("user_id = ?", userID).Table("message_boards").Find(&msg).Error
+	return msg, r.DB.WithContext(ctx).Where("user_id = ? AND expires_at > ?", userID, time.Now()).Table("message_boards").
+		Order("created_at DESC").
+		Find(&msg).Error
 }
 
 func (r *repo) CreateUser(ctx context.Context, record *auth.UserRecord, req *schema.CreateUserRequest) (*model.User, error) {

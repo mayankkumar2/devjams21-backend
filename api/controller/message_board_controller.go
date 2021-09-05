@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
+	"time"
 )
 
 func SendMessageToTeam(ctx *gin.Context)  {
@@ -15,6 +16,7 @@ func SendMessageToTeam(ctx *gin.Context)  {
 		TeamId *uuid.UUID `json:"team_id"`
 		Message string `json:"message"`
 		Meta model.JSON `json:"meta"`
+		ExpiresAt time.Time `json:"expires_at"`
 	})
 
 	if err := ctx.BindJSON(payload); err != nil {
@@ -34,7 +36,7 @@ func SendMessageToTeam(ctx *gin.Context)  {
 		ids = append(ids, v.UserID)
 	}
 
-	err = db.MessageBoardService.CreateMessage(ctx, ids, payload.Message, payload.Meta)
+	err = db.MessageBoardService.CreateMessage(ctx, ids, payload.Message, payload.Meta, payload.ExpiresAt)
 	if err != nil {
 		views.ErrorView(err, nil)
 		return
@@ -48,6 +50,7 @@ func SendMessageToOne(ctx *gin.Context)  {
 		UserId *uuid.UUID `json:"user_id"`
 		Message string `json:"message"`
 		Meta model.JSON `json:"meta"`
+		ExpiresAt time.Time `json:"expires_at"`
 	})
 
 	if err := ctx.BindJSON(payload); err != nil {
@@ -66,7 +69,7 @@ func SendMessageToOne(ctx *gin.Context)  {
 		payload.UserId,
 	}
 
-	err = db.MessageBoardService.CreateMessage(ctx, ids, payload.Message, payload.Meta)
+	err = db.MessageBoardService.CreateMessage(ctx, ids, payload.Message, payload.Meta, payload.ExpiresAt)
 	if err != nil {
 		views.ErrorView(err, nil)
 		return
