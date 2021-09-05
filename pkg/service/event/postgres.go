@@ -31,7 +31,7 @@ func (r *repo) CreateEvent(ctx context.Context, payload *schema.CreateEventReque
 
 func (r *repo) GetEvent(ctx context.Context, ID *uuid.UUID) (*model.Event, error) {
 	e := new(model.Event)
-	err := r.DB.WithContext(ctx).First(e, "id = ?", ID).Error
+	err := r.DB.WithContext(ctx).Preload("Challenge").First(e, "id = ?", ID).Error
 	if err != nil {
 		return nil, err
 	}
