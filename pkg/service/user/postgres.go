@@ -23,12 +23,20 @@ func NewUserRepo(db *gorm.DB) Repository {
 func (r *repo) CreateUser(ctx context.Context, record *auth.UserRecord, req *schema.CreateUserRequest) (*model.User, error) {
 	db := r.DB.WithContext(ctx)
 	usr := &model.User{
-		Name:    record.DisplayName,
-		UID:     record.UID,
-		Email:   record.Email,
-		RegNo:   req.Meta.RegNo,
-		College: req.Meta.College,
-		PhotoUrl: record.PhotoURL,
+		Name:           record.DisplayName,
+		UID:            record.UID,
+		Email:          record.Email,
+		RegNo:          req.Meta.RegNo,
+		College:        req.Meta.College,
+		PhotoUrl:       record.PhotoURL,
+		PhoneNumber:    req.Meta.PhoneNumber,
+		Gender:         req.Meta.Gender,
+		Degree:         req.Meta.Degree,
+		Stream:         req.Meta.Stream,
+		GraduationYear: req.Meta.GraduationYear,
+		Age:            req.Meta.Age,
+		Address:        req.Meta.Address,
+		TShirtSize:     req.Meta.TShirtSize,
 	}
 	return usr, db.Create(&usr).Error
 }

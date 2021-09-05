@@ -17,10 +17,15 @@ type Service interface {
 	// GetParticipationTeams gets array of teams participating in an event
 	GetParticipationTeams(ctx context.Context, eventID *uuid.UUID) ([]model.Team, error)
 	IsUserParticipatingInEvent(ctx context.Context, eventId, userId *uuid.UUID) (*int64, error)
+	ParticipationByEventAndUser(ctx context.Context, eventId, userId *uuid.UUID) (*model.Participation, error)
 }
 
 type svc struct {
 	repo Repository
+}
+
+func (s *svc) ParticipationByEventAndUser(ctx context.Context, eventId, userId *uuid.UUID) (*model.Participation, error) {
+	return s.repo.ParticipationByEventAndUser(ctx, eventId, userId)
 }
 
 func (s *svc) IsUserParticipatingInEvent(ctx context.Context, eventId, userId *uuid.UUID) (*int64, error) {

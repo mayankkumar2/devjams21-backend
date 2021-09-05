@@ -15,7 +15,7 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 		usrRouter.PATCH("/update", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserProfileUpdateController)
 		usrRouter.GET("/teams", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserTeamsController)
 		usrRouter.GET("/leader", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserLeaderController)
-		usrRouter.GET("/participation",middleware.AuthMiddleware(),middleware.AttachUser,controller.UserParticipationController)
+		usrRouter.GET("/participation", middleware.AuthMiddleware(), middleware.AttachUser, controller.UserParticipationController)
 	}
 
 	teamRouter := r.Group("/team")
@@ -32,6 +32,7 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 
 	participationRouter := r.Group("/participation")
 	{
+		participationRouter.POST("/start", middleware.AuthMiddleware(), middleware.AttachUser, controller.StartController)
 		participationRouter.DELETE("/remove", middleware.AuthMiddleware(), middleware.AttachUser, controller.DeleteParticipationController)
 		participationRouter.GET("/teams/:event_id", controller.GetTeamsController)
 		participationRouter.POST("/create", middleware.AuthMiddleware(), middleware.AttachUser, controller.CreateParticipationController)
@@ -42,6 +43,10 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 		eventRouter.GET("/fetch/:event_id", middleware.AuthMiddleware(), middleware.AttachUser, controller.GetEventController)
 	}
 
+	submissionRouter := r.Group("/submission")
+	{
+		submissionRouter.PATCH("/update", middleware.AuthMiddleware(), middleware.AttachUser, controller.SaveSubmission)
+	}
 
 	r.GET("/", controller.HealthController)
 	r.GET("/health", controller.HealthController)

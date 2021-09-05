@@ -2,5 +2,6 @@ package model
 
 type Submission struct {
 	BaseModel
-	Meta map[string]interface{} `json:"meta" gorm:"type:json"`
+	Freeze bool `json:"-" gorm:"default:false"`
+	Meta   JSON `json:"meta" gorm:"type:json"`
 }

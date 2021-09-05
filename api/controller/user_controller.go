@@ -75,7 +75,19 @@ func UserProfileUpdateController(ctx *gin.Context) {
 	}
 	usr := userValue.(*model.User)
 
-	allowedAttributes := []string{"name", "college", "reg_no"}
+	allowedAttributes := []string{
+		"name",
+		"college",
+		"reg_no",
+		"phone_number",
+		"gender",
+		"degree",
+		"stream",
+		"graduation_year",
+		"age",
+		"address",
+		"t_shirt_size",
+	}
 
 	updatesPayload := make(map[string]interface{})
 	for _, v := range allowedAttributes {
@@ -124,7 +136,37 @@ func UserLoginController(ctx *gin.Context) {
 		return
 	}
 	views.DataView(ctx, http.StatusOK, "success", gin.H{
-		"user":   usr,
+		"user": struct {
+			ID             *uuid.UUID `json:"id"`
+			Name           string     `json:"Name"`
+			Email          string     `json:"email"`
+			RegNo          string     `json:"reg_no,omitempty"`
+			College        string     `json:"college"`
+			PhotoUrl       string     `json:"photo_url"`
+			PhoneNumber    string     `json:"phone_number"`
+			Gender         string     `json:"gender"`
+			Degree         string     `json:"degree"`
+			Stream         string     `json:"stream"`
+			GraduationYear string     `json:"graduation_year"`
+			Age            uint       `json:"age"`
+			Address        string     `json:"address"`
+			TShirtSize     string     `json:"t_shirt_size"`
+		}{
+			ID:             usr.ID,
+			Name:           usr.Name,
+			Email:          usr.Email,
+			RegNo:          usr.RegNo,
+			College:        usr.College,
+			PhotoUrl:       usr.PhotoUrl,
+			PhoneNumber:    usr.PhoneNumber,
+			Gender:         usr.Gender,
+			Degree:         usr.Degree,
+			Stream:         usr.Stream,
+			GraduationYear: usr.GraduationYear,
+			Age:            usr.Age,
+			Address:        usr.Address,
+			TShirtSize:     usr.TShirtSize,
+		},
 		"token":  tok,
 		"expiry": exp,
 	})
@@ -148,7 +190,6 @@ func UserTeamsController(ctx *gin.Context) {
 		"teams": teams,
 	})
 }
-
 func UserLeaderController(ctx *gin.Context) {
 	payload := new(struct {
 		UserID *uuid.UUID `json:"user_id"`
@@ -172,8 +213,6 @@ func UserLeaderController(ctx *gin.Context) {
 		"is_leader": isleader,
 	})
 }
-
-
 func UserParticipationController(ctx *gin.Context) {
 	userValue, exists := ctx.Get("user")
 	if !exists {

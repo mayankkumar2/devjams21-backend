@@ -19,8 +19,6 @@ func NewRepo(db *gorm.DB) Repository {
 	}
 }
 
-
-
 func (r *repo) CreateParticipation(ctx context.Context, eventId *uuid.UUID, userID *uuid.UUID, teamName string) (*model.Participation, error) {
 	var p *model.Participation
 	return p, r.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -32,7 +30,7 @@ func (r *repo) CreateParticipation(ctx context.Context, eventId *uuid.UUID, user
 			Submission: &model.Submission{
 				Meta: model.JSON(map[string]interface{}{}),
 			},
-			EventID:    eventId,
+			EventID: eventId,
 		}
 		if err := tx.Create(p).Error; err != nil {
 			return err
@@ -64,11 +62,11 @@ func (r *repo) DeleteParticipation(ctx context.Context, p *model.Participation) 
 
 func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.Participation, error) {
 	p := new(model.Participation)
-	return p, r.DB.WithContext(ctx).Find(p, "id = ?", id).Error
+	return p, r.DB.WithContext(ctx).First(p, "id = ?", id).Error
 }
 
 func (r *repo) GetParticipationTeams(ctx context.Context, eventID *uuid.UUID) ([]model.Team, error) {
-	var teams = make([]model.Team, 0,100)
+	var teams = make([]model.Team, 0, 100)
 
 	err := r.DB.WithContext(ctx).
 		Preload("TeamXUser.User").
@@ -81,7 +79,7 @@ func (r *repo) GetParticipationTeams(ctx context.Context, eventID *uuid.UUID) ([
 	return teams, err
 }
 
-func (r *repo) IsUserParticipatingInEvent(ctx context.Context, eventId, userId *uuid.UUID) (*int64, error){
+func (r *repo) IsUserParticipatingInEvent(ctx context.Context, eventId, userId *uuid.UUID) (*int64, error) {
 	c := new(int64)
 	return c, r.DB.WithContext(ctx).
 		Table("participations").
@@ -90,4 +88,11 @@ func (r *repo) IsUserParticipatingInEvent(ctx context.Context, eventId, userId *
 		Where("user_id = ?  AND event_id = ?", userId, eventId).Count(c).Error
 }
 
-
+func (r *repo) ParticipationByEventAndUser(ctx context.Context, eventId, userId *uuid.UUID) (*model.Participation, error) {
+	c := new(model.Participation)
+	return c, r.DB.WithContext(ctx).
+		Table("participations").
+		Joins("JOIN teams t on t.id = participations.team_id").
+		Joins("JOIN team_x_users txu on t.id = txu.team_id and t.id = txu.team_id").
+		Where("user_id = ?  AND event_id = ?", userId, eventId).First(c).Error
+}

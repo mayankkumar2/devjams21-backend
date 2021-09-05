@@ -15,11 +15,11 @@ type repo struct {
 
 func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.Team, error) {
 	var t model.Team
-	return &t, r.DB.WithContext(ctx).Where("id = ?", id.String()).Find(&t).Error
+	return &t, r.DB.WithContext(ctx).Where("id = ?", id.String()).First(&t).Error
 }
 
 func (r *repo) FetchTeamMembers(ctx context.Context, teamId *uuid.UUID) ([]model.TeamXUser, error) {
-	var tm = make([]model.TeamXUser,0, 100)
+	var tm = make([]model.TeamXUser, 0, 100)
 	return tm, r.DB.WithContext(ctx).Where("team_id = ?", teamId).Find(&tm).Error
 }
 

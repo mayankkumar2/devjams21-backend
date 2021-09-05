@@ -154,7 +154,7 @@ func GetTeamController(ctx *gin.Context) {
 			"team_details": t,
 			"user_details": m,
 			"members":      members,
-			"join_code": t.JoinCode,
+			"join_code":    t.JoinCode,
 		},
 	})
 }

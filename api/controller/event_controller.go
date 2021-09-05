@@ -5,6 +5,7 @@ import (
 	"github.com/GDGVIT/devjams21-backend/errors"
 	"github.com/GDGVIT/devjams21-backend/pkg/model"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"net/http"
 
 	"github.com/GDGVIT/devjams21-backend/api/schema"
@@ -99,9 +100,17 @@ func GetEventController(ctx *gin.Context) {
 	if *c >= 1 {
 		isReg = true
 	}
+	p, err := db.ParticipationService.ParticipationByEventAndUser(ctx, event.ID, usr.ID)
+	if err != gorm.ErrRecordNotFound && err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(errors.ErrUnexpected, ctx)
+		return
+	}
+
 	views.DataView(ctx, http.StatusOK, "success", gin.H{
-		"event":event,
+		"event":         event,
 		"is_registered": isReg,
+		"participation": p,
 	})
 }
 
