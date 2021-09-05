@@ -107,10 +107,17 @@ func GetEventController(ctx *gin.Context) {
 		return
 	}
 
+	teamSize := 0
+	if p != nil {
+		mxu, _ := db.TeamService.FetchTeamMembers(ctx, p.TeamID)
+		teamSize = len(mxu)
+	}
+
 	views.DataView(ctx, http.StatusOK, "success", gin.H{
 		"event":         event,
 		"is_registered": isReg,
 		"participation": p,
+		"team_size": teamSize,
 	})
 }
 
