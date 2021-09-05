@@ -9,7 +9,7 @@ require (
 	cloud.google.com/go/firestore v1.5.0 // indirect
 	cloud.google.com/go/storage v1.16.0 // indirect
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/appleboy/gin-jwt/v2 v2.6.4
+	github.com/appleboy/gin-jwt/v2 v2.6.5-0.20210827121450-79689222c755
 	github.com/getsentry/sentry-go v0.11.0
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.2
