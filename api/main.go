@@ -1,12 +1,12 @@
 package main
 
 import (
+	"github.com/GDGVIT/devjams21-backend/api/middleware"
 	"github.com/GDGVIT/devjams21-backend/api/router"
 	"github.com/GDGVIT/devjams21-backend/db"
 	"github.com/GDGVIT/devjams21-backend/pkg/firebaseUtil"
 	"github.com/GDGVIT/devjams21-backend/pkg/sentryUtil"
 	"github.com/getsentry/sentry-go"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	log "github.com/sirupsen/logrus"
@@ -39,7 +39,7 @@ func main() {
 	sentryUtil.InitSentry()
 	defer sentry.Flush(2 * time.Second)
 	r := gin.Default()
-	r.Use(cors.Default())
+	r.Use(middleware.CORSMiddleware())
 	api := r.Group("api")
 	if os.Getenv("DEPLOYMENT") == "PUBLIC" {
 		router.RegisterPublicRoutes(api)
