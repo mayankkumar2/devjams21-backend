@@ -9,7 +9,7 @@ type User struct {
 	College        string `json:"college" gorm:"type:varchar(100)"`
 	PhotoUrl       string `json:"-" gorm:"type:varchar(200)"`
 	PhoneNumber    string `json:"-" gorm:"type:varchar(15)"`
-	Gender         string `json:"-" gorm:"type:char(1)"`
+	Gender         string `json:"-" gorm:"type:varchar(50)"`
 	Degree         string `json:"-" gorm:"type:varchar(100)"`
 	Stream         string `json:"-" gorm:"type:varchar(100)"`
 	GraduationYear string `json:"-" gorm:"type:char(5)"`
