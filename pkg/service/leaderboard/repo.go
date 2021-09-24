@@ -8,5 +8,5 @@ import (
 
 type Repository interface {
 	CreateScore(ctx context.Context, id *uuid.UUID, score uint, msg string) error
-	GetLeaderBoard(ctx context.Context) ([]schema.LeaderboardResponse,error)
+	GetLeaderBoard(ctx context.Context) ([]schema.LeaderboardResponse, error)
 }

@@ -31,20 +31,24 @@ func (r *repo) FindMessages(ctx context.Context, userID *uuid.UUID) ([]model.Mes
 func (r *repo) CreateUser(ctx context.Context, record *auth.UserRecord, req *schema.CreateUserRequest) (*model.User, error) {
 	db := r.DB.WithContext(ctx)
 	usr := &model.User{
-		Name:           record.DisplayName,
-		UID:            record.UID,
-		Email:          record.Email,
-		RegNo:          req.Meta.RegNo,
-		College:        req.Meta.College,
-		PhotoUrl:       record.PhotoURL,
-		PhoneNumber:    req.Meta.PhoneNumber,
-		Gender:         req.Meta.Gender,
-		Degree:         req.Meta.Degree,
-		Stream:         req.Meta.Stream,
-		GraduationYear: req.Meta.GraduationYear,
-		Age:            req.Meta.Age,
-		Address:        req.Meta.Address,
-		TShirtSize:     req.Meta.TShirtSize,
+		FirstName:             req.Meta.FirstName,
+		LastName:              req.Meta.LastName,
+		UID:                   record.UID,
+		Email:                 record.Email,
+		RegNo:                 req.Meta.RegNo,
+		College:               req.Meta.College,
+		PhotoUrl:              record.PhotoURL,
+		PhoneNumber:           req.Meta.PhoneNumber,
+		Gender:                req.Meta.Gender,
+		Degree:                req.Meta.Degree,
+		Stream:                req.Meta.Stream,
+		GraduationYear:        req.Meta.GraduationYear,
+		Age:                   req.Meta.Age,
+		Address:               req.Meta.Address,
+		TShirtSize:            req.Meta.TShirtSize,
+		AgreeMLHCodeOfConduct: req.Meta.AgreeMLHCodeOfConduct,
+		AgreeMLHPrivacyPolicy: req.Meta.AgreeMLHPrivacyPolicy,
+		AgreeMLHEventDetails:  req.Meta.AgreeMLHEventDetails,
 	}
 	return usr, db.Create(&usr).Error
 }
@@ -54,8 +58,6 @@ func (r *repo) FindByID(ctx context.Context, id *uuid.UUID) (*model.User, error)
 	return usr, r.DB.WithContext(ctx).
 		First(usr, "id = ?", id.String()).Error
 }
-
-
 
 func (r *repo) FindByUID(ctx context.Context, uid string) (*model.User, error) {
 	var usr = new(model.User)

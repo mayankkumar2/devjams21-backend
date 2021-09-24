@@ -23,6 +23,11 @@ func CreateUserController(ctx *gin.Context) {
 		return
 	}
 
+	if !payload.Meta.AgreeMLHPrivacyPolicy || !payload.Meta.AgreeMLHCodeOfConduct {
+		views.ErrorView(e.ErrAgreeTermsCondition, ctx)
+		return
+	}
+
 	usrRec, err := firebaseUtil.GetUserDetail(ctx, payload.IdToken)
 	if err != nil {
 		sentry.CaptureException(err)
@@ -59,7 +64,8 @@ func UserProfileController(ctx *gin.Context) {
 
 	views.DataView(ctx, http.StatusOK, "success", struct {
 		ID             *uuid.UUID `json:"id"`
-		Name           string     `json:"Name"`
+		FirstName           string     `json:"first_name"`
+		LastName string `json:"last_name"`
 		Email          string     `json:"email"`
 		RegNo          string     `json:"reg_no,omitempty"`
 		College        string     `json:"college"`
@@ -74,7 +80,8 @@ func UserProfileController(ctx *gin.Context) {
 		TShirtSize     string     `json:"t_shirt_size"`
 	}{
 		ID:             usr.ID,
-		Name:           usr.Name,
+		FirstName:           usr.FirstName,
+		LastName: usr.LastName,
 		Email:          usr.Email,
 		RegNo:          usr.RegNo,
 		College:        usr.College,
@@ -97,7 +104,7 @@ func UserMessagesController(ctx *gin.Context) {
 		return
 	}
 	usr := userValue.(*model.User)
-	m , err := db.UserService.FindMessages(ctx, usr.ID)
+	m, err := db.UserService.FindMessages(ctx, usr.ID)
 	if err != nil {
 		sentry.CaptureException(err)
 		views.ErrorView(e.ErrUnexpected, ctx)
@@ -185,7 +192,8 @@ func UserLoginController(ctx *gin.Context) {
 	views.DataView(ctx, http.StatusOK, "success", gin.H{
 		"user": struct {
 			ID             *uuid.UUID `json:"id"`
-			Name           string     `json:"Name"`
+			FirstName           string     `json:"first_name"`
+			LastName string `json:"last_name"`
 			Email          string     `json:"email"`
 			RegNo          string     `json:"reg_no,omitempty"`
 			College        string     `json:"college"`
@@ -200,7 +208,8 @@ func UserLoginController(ctx *gin.Context) {
 			TShirtSize     string     `json:"t_shirt_size"`
 		}{
 			ID:             usr.ID,
-			Name:           usr.Name,
+			FirstName:           usr.FirstName,
+			LastName: usr.LastName,
 			Email:          usr.Email,
 			RegNo:          usr.RegNo,
 			College:        usr.College,
