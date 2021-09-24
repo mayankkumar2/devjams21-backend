@@ -9,5 +9,4 @@ import (
 
 type Repository interface {
 	CreateMessage(ctx context.Context, usrId []*uuid.UUID, message string, meta model.JSON, exp time.Time) error
-	
 }

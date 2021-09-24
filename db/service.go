@@ -19,8 +19,8 @@ var (
 	EventService         event.Service         = nil
 	SubmissionService    submission.Service    = nil
 	ParticipationService participation.Service = nil
-	MessageBoardService messageBoard.Service = nil
-	LeaderboardService leaderboard.Service = nil
+	MessageBoardService  messageBoard.Service  = nil
+	LeaderboardService   leaderboard.Service   = nil
 )
 
 func initializeServices(db *gorm.DB) {

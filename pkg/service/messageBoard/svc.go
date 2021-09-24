@@ -24,5 +24,3 @@ func NewService(r Repository) Service {
 		repo: r,
 	}
 }
-
-

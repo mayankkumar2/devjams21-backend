@@ -12,17 +12,17 @@ type repo struct {
 	DB *gorm.DB
 }
 
-func NewRepo(db *gorm.DB) Repository{
+func NewRepo(db *gorm.DB) Repository {
 	return &repo{
 		DB: db,
 	}
 }
 
-func (r *repo) GetLeaderBoard(ctx context.Context) ([]schema.LeaderboardResponse,error) {
+func (r *repo) GetLeaderBoard(ctx context.Context) ([]schema.LeaderboardResponse, error) {
 	m := make([]schema.LeaderboardResponse, 0, 100)
 	return m, r.DB.WithContext(ctx).Table(" (SELECT sum(score) as scr, user_id FROM scores GROUP BY user_id) sc").
 		Joins("JOIN users ON users.id = sc.user_id").
-		Select("users.name as name, sc.scr as scr, users.photo_url as photo_url" ).
+		Select("users.name as name, sc.scr as scr, users.photo_url as photo_url").
 		Order("sc.scr DESC").
 		Find(&m).Error
 }

@@ -117,7 +117,7 @@ func GetEventController(ctx *gin.Context) {
 		"event":         event,
 		"is_registered": isReg,
 		"participation": p,
-		"team_size": teamSize,
+		"team_size":     teamSize,
 	})
 }
 

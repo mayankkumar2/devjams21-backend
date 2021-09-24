@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func GetLeaderboard(ctx *gin.Context)  {
+func GetLeaderboard(ctx *gin.Context) {
 	e, _ := db.LeaderboardService.GetLeaderBoard(ctx)
 	views.DataView(ctx, http.StatusOK, "success", e)
 }

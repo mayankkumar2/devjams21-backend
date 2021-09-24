@@ -11,12 +11,12 @@ import (
 	"time"
 )
 
-func SendMessageToTeam(ctx *gin.Context)  {
-	payload := new(struct{
-		TeamId *uuid.UUID `json:"team_id"`
-		Message string `json:"message"`
-		Meta model.JSON `json:"meta"`
-		ExpiresAt time.Time `json:"expires_at"`
+func SendMessageToTeam(ctx *gin.Context) {
+	payload := new(struct {
+		TeamId    *uuid.UUID `json:"team_id"`
+		Message   string     `json:"message"`
+		Meta      model.JSON `json:"meta"`
+		ExpiresAt time.Time  `json:"expires_at"`
 	})
 
 	if err := ctx.BindJSON(payload); err != nil {
@@ -44,13 +44,12 @@ func SendMessageToTeam(ctx *gin.Context)  {
 	views.DataView(ctx, http.StatusOK, "success", gin.H{})
 }
 
-
-func SendMessageToOne(ctx *gin.Context)  {
-	payload := new(struct{
-		UserId *uuid.UUID `json:"user_id"`
-		Message string `json:"message"`
-		Meta model.JSON `json:"meta"`
-		ExpiresAt time.Time `json:"expires_at"`
+func SendMessageToOne(ctx *gin.Context) {
+	payload := new(struct {
+		UserId    *uuid.UUID `json:"user_id"`
+		Message   string     `json:"message"`
+		Meta      model.JSON `json:"meta"`
+		ExpiresAt time.Time  `json:"expires_at"`
 	})
 
 	if err := ctx.BindJSON(payload); err != nil {
