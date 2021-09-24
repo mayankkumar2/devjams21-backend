@@ -22,7 +22,7 @@ func (r *repo) GetLeaderBoard(ctx context.Context) ([]schema.LeaderboardResponse
 	m := make([]schema.LeaderboardResponse, 0, 100)
 	return m, r.DB.WithContext(ctx).Table(" (SELECT sum(score) as scr, user_id FROM scores GROUP BY user_id) sc").
 		Joins("JOIN users ON users.id = sc.user_id").
-		Select("users.name as name, sc.scr as scr, users.photo_url as photo_url").
+		Select("users.first_name as first_name, users.last_name as last_name,sc.scr as scr, users.photo_url as photo_url").
 		Order("sc.scr DESC").
 		Find(&m).Error
 }
