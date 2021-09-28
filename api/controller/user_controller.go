@@ -64,8 +64,8 @@ func UserProfileController(ctx *gin.Context) {
 
 	views.DataView(ctx, http.StatusOK, "success", struct {
 		ID             *uuid.UUID `json:"id"`
-		FirstName           string     `json:"first_name"`
-		LastName string `json:"last_name"`
+		FirstName      string     `json:"first_name"`
+		LastName       string     `json:"last_name"`
 		Email          string     `json:"email"`
 		RegNo          string     `json:"reg_no,omitempty"`
 		College        string     `json:"college"`
@@ -80,8 +80,8 @@ func UserProfileController(ctx *gin.Context) {
 		TShirtSize     string     `json:"t_shirt_size"`
 	}{
 		ID:             usr.ID,
-		FirstName:           usr.FirstName,
-		LastName: usr.LastName,
+		FirstName:      usr.FirstName,
+		LastName:       usr.LastName,
 		Email:          usr.Email,
 		RegNo:          usr.RegNo,
 		College:        usr.College,
@@ -129,7 +129,8 @@ func UserProfileUpdateController(ctx *gin.Context) {
 	usr := userValue.(*model.User)
 
 	allowedAttributes := []string{
-		"name",
+		"first_name",
+		"last_name",
 		"college",
 		"reg_no",
 		"phone_number",
@@ -192,8 +193,8 @@ func UserLoginController(ctx *gin.Context) {
 	views.DataView(ctx, http.StatusOK, "success", gin.H{
 		"user": struct {
 			ID             *uuid.UUID `json:"id"`
-			FirstName           string     `json:"first_name"`
-			LastName string `json:"last_name"`
+			FirstName      string     `json:"first_name"`
+			LastName       string     `json:"last_name"`
 			Email          string     `json:"email"`
 			RegNo          string     `json:"reg_no,omitempty"`
 			College        string     `json:"college"`
@@ -208,8 +209,8 @@ func UserLoginController(ctx *gin.Context) {
 			TShirtSize     string     `json:"t_shirt_size"`
 		}{
 			ID:             usr.ID,
-			FirstName:           usr.FirstName,
-			LastName: usr.LastName,
+			FirstName:      usr.FirstName,
+			LastName:       usr.LastName,
 			Email:          usr.Email,
 			RegNo:          usr.RegNo,
 			College:        usr.College,

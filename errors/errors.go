@@ -24,5 +24,5 @@ var (
 	ErrEventOver                     = errors.New("error: Event is over")
 	ErrEventYetToStart               = errors.New("error: Event yet to start")
 	ErrNoChallengeInEvent            = errors.New("error: There is no challenge for event")
-	ErrAgreeTermsCondition = errors.New("error: Agree terms and condition")
+	ErrAgreeTermsCondition           = errors.New("error: Agree terms and condition")
 )
