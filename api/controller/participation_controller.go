@@ -206,10 +206,11 @@ func StartController(ctx *gin.Context) {
 	if time.Now().Unix() < event.Start.Unix() {
 		views.ErrorView(e.ErrEventYetToStart, ctx)
 		return
-	} else if event.End.Unix() < time.Now().Unix() {
-		views.ErrorView(e.ErrEventOver, ctx)
-		return
 	}
+	//else if event.End.Unix() < time.Now().Unix() {
+	//	views.ErrorView(e.ErrEventOver, ctx)
+	//	return
+	//}
 
 	s, err := db.SubmissionService.FindById(ctx, p.SubmissionID)
 	if err != nil {

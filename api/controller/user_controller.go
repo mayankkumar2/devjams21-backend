@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/GDGVIT/devjams21-backend/api/middleware"
@@ -227,6 +228,8 @@ func UserLoginController(ctx *gin.Context) {
 		"token":  tok,
 		"expiry": exp,
 	})
+	leaderboardMessageString := fmt.Sprintf("%v;CREATED_ACCOUNT", usr.ID.String())
+	_ = db.LeaderboardService.CreateScore(ctx, usr.ID, 20, leaderboardMessageString)
 }
 func UserTeamsController(ctx *gin.Context) {
 	userValue, exists := ctx.Get("user")

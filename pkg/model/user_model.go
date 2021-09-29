@@ -18,6 +18,7 @@ type User struct {
 	Address               string         `json:"-" gorm:"type:varchar(500)"`
 	TShirtSize            string         `json:"-" gorm:"type:varchar(20)"`
 	MessageBoard          []MessageBoard `json:"messages"`
+	ScoreBoard            []Score        `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	FCMToken              string         `json:"-" gorm:"type:varchar(1000)"`
 	AgreeMLHCodeOfConduct bool           `json:"-"`
 	AgreeMLHPrivacyPolicy bool           `json:"-"`

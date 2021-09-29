@@ -26,6 +26,7 @@ func (r *repo) UpdateSubmission(ctx context.Context, subId *uuid.UUID, meta mode
 	return r.DB.WithContext(ctx).
 		Table("submissions").
 		Where("id = ?", subId).
+		Update("freeze", true).
 		Update("meta", meta).
 		Error
 }
