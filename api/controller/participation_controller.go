@@ -47,8 +47,8 @@ func GetTeamsController(ctx *gin.Context) {
 	})
 }
 
-func GenerateTeamName(userName string) string {
-	return userName + "'s Team"
+func GenerateTeamName(userName string, event string) string {
+	return userName + "'s Team for " + event
 }
 
 func CreateParticipationController(ctx *gin.Context) {
@@ -95,7 +95,7 @@ func CreateParticipationController(ctx *gin.Context) {
 		return
 	}
 
-	p, err := db.ParticipationService.CreateParticipation(ctx, payload.EventID, usr.ID, GenerateTeamName(usr.Email))
+	p, err := db.ParticipationService.CreateParticipation(ctx, payload.EventID, usr.ID, GenerateTeamName(usr.Email, event.EventName))
 	if err != nil {
 		sentry.CaptureException(err)
 		views.ErrorView(e.ErrUnableToCreateParticipation, ctx)
