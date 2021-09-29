@@ -1,6 +1,6 @@
 on:
   push:
-    branches: ["ecs-production"]
+    branches: ["esc-production"]
   workflow_dispatch:
 
 
@@ -37,6 +37,8 @@ jobs:
           ENV_CONFIG: ${{ secrets.ENV_CONFIG }}
         run: |
           mkdir config/
+          echo "$FIREBASE_CONFIG" > config/firebase.json
+          echo "$ENV_CONFIG" > .env
           docker build \
            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
