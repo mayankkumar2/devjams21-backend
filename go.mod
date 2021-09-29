@@ -20,6 +20,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
+	github.com/moby/moby v20.10.8+incompatible // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.8.1
 	github.com/ugorji/go v1.2.6 // indirect
