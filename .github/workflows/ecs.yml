@@ -1,6 +1,6 @@
 on:
   push:
-    branches: ["esc-production"]
+    branches: ["ecs-production"]
   workflow_dispatch:
 
 
