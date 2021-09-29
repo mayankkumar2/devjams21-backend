@@ -7,12 +7,14 @@ import (
 	"github.com/GDGVIT/devjams21-backend/pkg/firebaseUtil"
 	"github.com/GDGVIT/devjams21-backend/pkg/sentryUtil"
 	"github.com/getsentry/sentry-go"
+	limits "github.com/gin-contrib/size"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"math/rand"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -29,6 +31,7 @@ func init() {
 		_ = os.Setenv("DATABASE_URL", viper.GetString("DATABASE_URL"))
 		_ = os.Setenv("DEPLOYMENT", viper.GetString("DEPLOYMENT"))
 		_ = os.Setenv("SENTRY_URL", viper.GetString("SENTRY_URL"))
+		_ = os.Setenv("PAYLOAD_SIZE", viper.GetString("PAYLOAD_SIZE"))
 	}
 	rand.Seed(time.Now().UnixNano())
 }
@@ -38,8 +41,18 @@ func main() {
 	firebaseUtil.InitFirebaseService()
 	sentryUtil.InitSentry()
 	defer sentry.Flush(2 * time.Second)
+
+	payloadSizeLimit, err := strconv.Atoi(os.Getenv("PAYLOAD_SIZE"))
+	if err != nil {
+		payloadSizeLimit = 10 // 10 MB
+	}
+
 	r := gin.Default()
+	gin.New()
 	r.Use(middleware.CORSMiddleware())
+
+	r.Use(limits.RequestSizeLimiter(int64(payloadSizeLimit)))
+
 	api := r.Group("api")
 	if os.Getenv("DEPLOYMENT") == "PUBLIC" {
 		router.RegisterPublicRoutes(api)

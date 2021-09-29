@@ -3,6 +3,7 @@ package controller
 import (
 	e "github.com/GDGVIT/devjams21-backend/errors"
 	"github.com/GDGVIT/devjams21-backend/pkg/model"
+	"github.com/moby/moby/pkg/namesgenerator"
 	"gorm.io/gorm"
 	"net/http"
 	"time"
@@ -47,8 +48,8 @@ func GetTeamsController(ctx *gin.Context) {
 	})
 }
 
-func GenerateTeamName(userName string) string {
-	return userName + "'s Team"
+func GenerateTeamName(userName string, event string) string {
+	return userName + "'s Team for " + event
 }
 
 func CreateParticipationController(ctx *gin.Context) {
@@ -95,7 +96,7 @@ func CreateParticipationController(ctx *gin.Context) {
 		return
 	}
 
-	p, err := db.ParticipationService.CreateParticipation(ctx, payload.EventID, usr.ID, GenerateTeamName(usr.Email))
+	p, err := db.ParticipationService.CreateParticipation(ctx, payload.EventID, usr.ID, namesgenerator.GetRandomName(3))
 	if err != nil {
 		sentry.CaptureException(err)
 		views.ErrorView(e.ErrUnableToCreateParticipation, ctx)

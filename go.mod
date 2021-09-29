@@ -12,7 +12,8 @@ require (
 	github.com/appleboy/gin-jwt/v2 v2.6.5-0.20210827121450-79689222c755
 	github.com/getsentry/sentry-go v0.11.0
 	github.com/gin-contrib/cors v1.3.1
-	github.com/gin-gonic/gin v1.7.2
+	github.com/gin-contrib/size v0.0.0-20210919000459-530e72392062 // indirect
+	github.com/gin-gonic/gin v1.7.4
 	github.com/go-playground/validator/v10 v10.7.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/uuid v1.3.0
@@ -20,6 +21,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
+	github.com/moby/moby v20.10.8+incompatible // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.8.1
 	github.com/ugorji/go v1.2.6 // indirect
