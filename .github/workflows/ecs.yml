@@ -1,6 +1,8 @@
 on:
   push:
     branches: ["ecs-production"]
+  workflow_dispatch:
+
 
 name: Deploy to Amazon ECS
 
