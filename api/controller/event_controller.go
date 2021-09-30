@@ -113,6 +113,8 @@ func GetEventController(ctx *gin.Context) {
 		teamSize = len(mxu)
 	}
 
+	event.Challenge = nil
+
 	views.DataView(ctx, http.StatusOK, "success", gin.H{
 		"event":         event,
 		"is_registered": isReg,
