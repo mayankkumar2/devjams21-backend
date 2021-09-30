@@ -44,7 +44,9 @@ func main() {
 
 	payloadSizeLimit, err := strconv.Atoi(os.Getenv("PAYLOAD_SIZE"))
 	if err != nil {
-		payloadSizeLimit = 10 // 10 MB
+		payloadSizeLimit = 10 * 1024 * 1024 // 10 MB
+	} else {
+		payloadSizeLimit = payloadSizeLimit * 1024 * 1024
 	}
 
 	r := gin.Default()
