@@ -32,6 +32,7 @@ func init() {
 		_ = os.Setenv("DEPLOYMENT", viper.GetString("DEPLOYMENT"))
 		_ = os.Setenv("SENTRY_URL", viper.GetString("SENTRY_URL"))
 		_ = os.Setenv("PAYLOAD_SIZE", viper.GetString("PAYLOAD_SIZE"))
+		_ = os.Setenv("GIN_MODE", viper.GetString("GIN_MODE"))
 	}
 	rand.Seed(time.Now().UnixNano())
 }
