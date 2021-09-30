@@ -53,7 +53,13 @@ func (r *repo) DeleteParticipation(ctx context.Context, p *model.Participation) 
 		if err := tx.Where("id = ?", p.ID).Delete(&model.Participation{}).Error; err != nil {
 			return err
 		}
+		if err := tx.Where("id = ?", p.TeamID).Delete(&model.Team{}).Error; err != nil {
+			return err
+		}
 		if err := tx.Where("team_id = ?", p.TeamID).Delete(&model.TeamXUser{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Where("id = ?", p.SubmissionID).Delete(&model.Submission{}).Error; err != nil {
 			return err
 		}
 		return nil
