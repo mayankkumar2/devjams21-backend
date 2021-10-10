@@ -23,6 +23,17 @@ func (r *repo) FetchTeamMembers(ctx context.Context, teamId *uuid.UUID) ([]model
 	return tm, r.DB.WithContext(ctx).Where("team_id = ?", teamId).Joins("User").Find(&tm).Error
 }
 
+func (r *repo) CountTeamByTeamName(ctx context.Context, teamName string, eventId *uuid.UUID) (int64,error) {
+	var c int64
+	err := r.DB.WithContext(ctx).Table("teams").
+		Joins("JOIN participations p ON p.team_id = teams.id").
+		Where("team_name = ? AND event_id = ?", teamName, eventId).Count(&c).Error
+	if err != nil {
+		return 100, err
+	}
+	return c, nil
+}
+
 func (r *repo) FindByJoinCode(ctx context.Context, code string) (*model.Team, error) {
 	t := new(model.Team)
 	return t, r.DB.WithContext(ctx).
