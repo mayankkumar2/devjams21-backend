@@ -21,11 +21,16 @@ type Service interface {
 	RemoveFromTeam(ctx context.Context, team *model.Team, usr *model.User) error
 	AcceptJoinRequest(ctx context.Context, team *model.Team, userID *uuid.UUID) error
 	FetchTeamMembers(ctx context.Context, teamId *uuid.UUID) ([]model.TeamXUser, error)
+	CountTeamByTeamName(ctx context.Context, teamName string,  eventId *uuid.UUID) (int64,error)
 	UpdateTeamName(ctx context.Context, teamId *uuid.UUID, teamName string) error
 }
 
 type svc struct {
 	repo Repository
+}
+
+func (s *svc) CountTeamByTeamName(ctx context.Context, teamName string,  eventId *uuid.UUID) (int64,error) {
+	return s.repo.CountTeamByTeamName(ctx, teamName, eventId)
 }
 
 func (s *svc) UpdateTeamName(ctx context.Context, teamId *uuid.UUID, teamName string) error {

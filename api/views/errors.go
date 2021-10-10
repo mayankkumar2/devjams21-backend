@@ -30,6 +30,7 @@ var ErrHTTPStatusMap = map[error]int{
 	e.ErrEventYetToStart:               http.StatusForbidden,
 	e.ErrNoChallengeInEvent:            http.StatusConflict,
 	e.ErrAgreeTermsCondition:           http.StatusUnauthorized,
+	e.ErrAlreadyExists:  http.StatusConflict,
 }
 
 func ErrorView(err error, c *gin.Context) {
