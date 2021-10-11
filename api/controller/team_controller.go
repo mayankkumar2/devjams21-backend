@@ -97,6 +97,21 @@ func UpdateTeamNameController(ctx *gin.Context) {
 		return
 	}
 
+	event, err := db.EventService.GetEventByTeamID(ctx, t.ID)
+	if err != nil {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	c, err := db.TeamService.CountTeamByTeamName(ctx, payload.Name, event.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	if c > 0 {
+		views.ErrorView(e.ErrAlreadyExists, ctx)
+		return
+	}
 	if err := db.TeamService.UpdateTeamName(ctx, t.ID, payload.Name); err != nil {
 		sentry.CaptureException(err)
 		views.ErrorView(err, ctx)

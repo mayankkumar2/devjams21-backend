@@ -25,4 +25,5 @@ var (
 	ErrEventYetToStart               = errors.New("error: Event yet to start")
 	ErrNoChallengeInEvent            = errors.New("error: There is no challenge for event")
 	ErrAgreeTermsCondition           = errors.New("error: Agree terms and condition")
+	ErrAlreadyExists = errors.New("error: Team name already exists")
 )

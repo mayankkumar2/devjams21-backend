@@ -2,6 +2,7 @@ package views
 
 import (
 	"database/sql/driver"
+	"github.com/getsentry/sentry-go"
 	"net/http"
 
 	e "github.com/GDGVIT/devjams21-backend/errors"
@@ -30,14 +31,17 @@ var ErrHTTPStatusMap = map[error]int{
 	e.ErrEventYetToStart:               http.StatusForbidden,
 	e.ErrNoChallengeInEvent:            http.StatusConflict,
 	e.ErrAgreeTermsCondition:           http.StatusUnauthorized,
+	e.ErrAlreadyExists:  http.StatusConflict,
 }
 
 func ErrorView(err error, c *gin.Context) {
 	msg := err.Error()
-	code := ErrHTTPStatusMap[err]
+	code, exist := ErrHTTPStatusMap[err]
 
-	if code == 0 {
+	if !exist {
 		code = http.StatusInternalServerError
+		sentry.CaptureException(err)
+		msg = "unexpected error"
 	}
 
 	log.WithFields(log.Fields{

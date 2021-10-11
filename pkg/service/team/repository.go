@@ -8,6 +8,7 @@ import (
 )
 
 type Repository interface {
+	CountTeamByTeamName(ctx context.Context, teamName string, eventId *uuid.UUID) (int64,error)
 	UpdateTeamName(ctx context.Context, teamId *uuid.UUID, teamName string) error
 	FindByID(ctx context.Context, id *uuid.UUID) (*model.Team, error)
 	CreateTeam(ctx context.Context, usr *model.User, teamName string) (*model.Team, error)
