@@ -16,5 +16,5 @@
 
 config/
 .env
-
+*.env
 .idea
