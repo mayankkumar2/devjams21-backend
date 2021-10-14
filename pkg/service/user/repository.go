@@ -18,4 +18,6 @@ type Repository interface {
 	FindByUID(ctx context.Context, uid string) (*model.User, error)
 	GetTeams(ctx context.Context, userID *uuid.UUID) ([]model.Team, error)
 	IsLeader(ctx context.Context, userID *uuid.UUID, teamID *uuid.UUID) (bool, error)
+	UpdateSocialAttributes(ctx context.Context, id *uuid.UUID, p map[string]interface{}) error
+	NetworkWithPeers(ctx context.Context, id *uuid.UUID) ([]model.User,error)
 }

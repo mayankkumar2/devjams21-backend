@@ -23,6 +23,8 @@ type User struct {
 	AgreeMLHCodeOfConduct bool           `json:"-"`
 	AgreeMLHPrivacyPolicy bool           `json:"-"`
 	AgreeMLHEventDetails  bool           `json:"-"`
+	OptInNetworking		bool `json:"opt_in_networking"`
+	Profile *Profile `json:"profile,omitempty"`
 }
 
 //Degree, Stream, city,  graduation year, age, address, T-shirt size
