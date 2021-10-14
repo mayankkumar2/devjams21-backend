@@ -123,5 +123,5 @@ func (r *repo) UpdateSocialAttributes(ctx context.Context, id *uuid.UUID, p map[
 
 func (r *repo) NetworkWithPeers(ctx context.Context, id *uuid.UUID) ([]model.User,error) {
 	u := make([]model.User, 0, 100)
-	return u, r.DB.WithContext(ctx).Model(&model.User{}).Joins("Profile").Where("users.id = ?", id).Find(&u).Error
+	return u, r.DB.WithContext(ctx).Model(&model.User{}).Joins("Profile").Where("users.id != ? and users.opt_in_networking = true", id).Find(&u).Error
 }
