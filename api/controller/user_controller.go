@@ -145,6 +145,7 @@ func UserProfileUpdateController(ctx *gin.Context) {
 		"address",
 		"t_shirt_size",
 		"fcm_token",
+		"opt_in_networking",
 	}
 
 	updatesPayload := make(map[string]interface{})
