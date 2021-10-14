@@ -64,7 +64,7 @@ func UserProfileController(ctx *gin.Context) {
 		return
 	}
 	usr := userValue.(*model.User)
-
+	p, _ := db.UserService.FetchNetworkProfileByID(ctx, usr.ID)
 	views.DataView(ctx, http.StatusOK, "success", struct {
 		ID             *uuid.UUID `json:"id"`
 		FirstName      string     `json:"first_name"`
@@ -81,6 +81,7 @@ func UserProfileController(ctx *gin.Context) {
 		Age            uint       `json:"age"`
 		Address        string     `json:"address"`
 		TShirtSize     string     `json:"t_shirt_size"`
+		Profile *model.Profile `json:"profile"`
 	}{
 		ID:             usr.ID,
 		FirstName:      usr.FirstName,
@@ -97,6 +98,7 @@ func UserProfileController(ctx *gin.Context) {
 		Age:            usr.Age,
 		Address:        usr.Address,
 		TShirtSize:     usr.TShirtSize,
+		Profile: p.Profile,
 	})
 }
 
@@ -310,6 +312,7 @@ func UserSocialsUpdateController(ctx *gin.Context) {
 		"github_url",
 		"linkedin_url",
 		"discord_username",
+		"tech_stack",
 	}
 
 	updatesPayload := make(map[string]interface{})

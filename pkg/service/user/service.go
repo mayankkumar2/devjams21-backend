@@ -10,6 +10,7 @@ import (
 )
 
 type Service interface {
+	FetchNetworkProfileByID(ctx context.Context, id *uuid.UUID) (*model.User, error)
 	FindMessages(ctx context.Context, userID *uuid.UUID) ([]model.MessageBoard, error)
 	MyParticipation(ctx context.Context, userId *uuid.UUID) ([]model.Participation, error)
 	CreateUser(ctx context.Context, record *auth.UserRecord, req *schema.CreateUserRequest) (*model.User, error)
@@ -24,6 +25,10 @@ type Service interface {
 
 type svc struct {
 	repo Repository
+}
+
+func (s *svc) FetchNetworkProfileByID(ctx context.Context, id *uuid.UUID) (*model.User, error) {
+	return s.repo.FetchNetworkProfileByID(ctx, id)
 }
 
 func (s *svc) NetworkWithPeers(ctx context.Context, id *uuid.UUID) ([]model.User, error) {
