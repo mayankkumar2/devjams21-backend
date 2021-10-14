@@ -10,6 +10,7 @@ import (
 )
 
 type Repository interface {
+	FetchNetworkProfileByID(ctx context.Context, id *uuid.UUID) (*model.User, error)
 	FindMessages(ctx context.Context, userID *uuid.UUID) ([]model.MessageBoard, error)
 	MyParticipation(ctx context.Context, userId *uuid.UUID) ([]model.Participation, error)
 	CreateUser(ctx context.Context, record *auth.UserRecord, req *schema.CreateUserRequest) (*model.User, error)

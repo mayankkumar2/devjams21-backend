@@ -8,4 +8,5 @@ type Profile struct {
 	GithubURL       string     `json:"github_url"`
 	LinkedinURL     string     `json:"linkedin_url"`
 	DiscordUsername string     `json:"discord_username"`
+	TechStack string `json:"tech_stack"`
 }
