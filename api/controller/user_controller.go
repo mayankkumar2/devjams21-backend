@@ -82,6 +82,7 @@ func UserProfileController(ctx *gin.Context) {
 		Address        string     `json:"address"`
 		TShirtSize     string     `json:"t_shirt_size"`
 		Profile *model.Profile `json:"profile"`
+		OptInNetworking bool `json:"opt_in_networking"`
 	}{
 		ID:             usr.ID,
 		FirstName:      usr.FirstName,
@@ -99,6 +100,7 @@ func UserProfileController(ctx *gin.Context) {
 		Address:        usr.Address,
 		TShirtSize:     usr.TShirtSize,
 		Profile: p.Profile,
+		OptInNetworking: usr.OptInNetworking,
 	})
 }
 
