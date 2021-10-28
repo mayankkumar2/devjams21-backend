@@ -49,6 +49,12 @@ func (r *repo) CreateUser(ctx context.Context, record *auth.UserRecord, req *sch
 		AgreeMLHCodeOfConduct: req.Meta.AgreeMLHCodeOfConduct,
 		AgreeMLHPrivacyPolicy: req.Meta.AgreeMLHPrivacyPolicy,
 		AgreeMLHEventDetails:  req.Meta.AgreeMLHEventDetails,
+		OptInNetworking: false,
+		Profile: &model.Profile{
+			GithubURL:       "",
+			LinkedinURL:     "",
+			DiscordUsername: "",
+		},
 	}
 	return usr, db.Create(&usr).Error
 }
@@ -108,4 +114,19 @@ func (r *repo) MyParticipation(ctx context.Context, userId *uuid.UUID) ([]model.
 			&m,
 			"team_id IN (SELECT id FROM teams JOIN team_x_users txu ON teams.id=txu.team_id AND  user_id = ?)",
 			userId).Error
+}
+
+func (r *repo) UpdateSocialAttributes(ctx context.Context, id *uuid.UUID, p map[string]interface{}) error {
+	return r.DB.WithContext(ctx).Model(&model.Profile{
+	}).Where("user_id = ?", id).Updates(p).Error
+}
+
+func (r *repo) NetworkWithPeers(ctx context.Context, id *uuid.UUID) ([]model.User,error) {
+	u := make([]model.User, 0, 100)
+	return u, r.DB.WithContext(ctx).Model(&model.User{}).Joins("Profile").Where("users.id != ? and users.opt_in_networking = true", id).Find(&u).Error
+}
+
+func (r *repo) FetchNetworkProfileByID(ctx context.Context, id *uuid.UUID) (*model.User, error) {
+	u := new(model.User)
+	return u, r.DB.WithContext(ctx).Model(&model.User{}).Joins("Profile").Where("users.id = ?", id).First(&u).Error
 }

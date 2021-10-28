@@ -34,8 +34,11 @@ func GetTeamsController(ctx *gin.Context) {
 		for j := range teams[i].TeamXUser {
 			if teams[i].TeamXUser[j].User != nil {
 				teams[i].TeamXUser[j].User.RegNo = ""
+				if !teams[i].TeamXUser[j].IsLeader {
+					teams[i].TeamXUser[j].User.College = ""
+					teams[i].TeamXUser[j].User.Email = ""
+				}
 			}
-
 			if teams[i].TeamXUser[j].IsAccepted {
 				m = append(m, teams[i].TeamXUser[j])
 			}

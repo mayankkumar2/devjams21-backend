@@ -64,7 +64,7 @@ func UserProfileController(ctx *gin.Context) {
 		return
 	}
 	usr := userValue.(*model.User)
-
+	p, _ := db.UserService.FetchNetworkProfileByID(ctx, usr.ID)
 	views.DataView(ctx, http.StatusOK, "success", struct {
 		ID             *uuid.UUID `json:"id"`
 		FirstName      string     `json:"first_name"`
@@ -81,6 +81,8 @@ func UserProfileController(ctx *gin.Context) {
 		Age            uint       `json:"age"`
 		Address        string     `json:"address"`
 		TShirtSize     string     `json:"t_shirt_size"`
+		Profile *model.Profile `json:"profile"`
+		OptInNetworking bool `json:"opt_in_networking"`
 	}{
 		ID:             usr.ID,
 		FirstName:      usr.FirstName,
@@ -97,6 +99,8 @@ func UserProfileController(ctx *gin.Context) {
 		Age:            usr.Age,
 		Address:        usr.Address,
 		TShirtSize:     usr.TShirtSize,
+		Profile: p.Profile,
+		OptInNetworking: usr.OptInNetworking,
 	})
 }
 
@@ -145,6 +149,7 @@ func UserProfileUpdateController(ctx *gin.Context) {
 		"address",
 		"t_shirt_size",
 		"fcm_token",
+		"opt_in_networking",
 	}
 
 	updatesPayload := make(map[string]interface{})
@@ -289,3 +294,63 @@ func UserParticipationController(ctx *gin.Context) {
 		"my_participation": p,
 	})
 }
+
+func UserSocialsUpdateController(ctx *gin.Context) {
+	var payload struct {
+		Updates map[string]interface{} `json:"updates"`
+	}
+	if err := ctx.BindJSON(&payload); err != nil {
+		sentry.CaptureException(err)
+		return
+	}
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+
+	allowedAttributes := []string{
+		"github_url",
+		"linkedin_url",
+		"discord_username",
+		"tech_stack",
+	}
+
+	updatesPayload := make(map[string]interface{})
+	for _, v := range allowedAttributes {
+		if k, ok := payload.Updates[v]; ok {
+			updatesPayload[v] = k
+		}
+	}
+
+	err := db.UserService.UpdateSocialAttributes(ctx, usr.ID, updatesPayload)
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(err, ctx)
+		return
+	}
+
+	views.DataView(ctx, http.StatusOK, "success", nil)
+}
+
+func NetworkingController(ctx *gin.Context) {
+
+	userValue, exists := ctx.Get("user")
+	if !exists {
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+	usr := userValue.(*model.User)
+
+	u, err := db.UserService.NetworkWithPeers(ctx, usr.ID)
+	if err != nil {
+		sentry.CaptureException(err)
+		views.ErrorView(e.ErrUnexpected, ctx)
+		return
+	}
+
+	views.DataView(ctx, http.StatusOK, "success", u)
+}
+
+

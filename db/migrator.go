@@ -18,6 +18,7 @@ func migrateModels(db *gorm.DB) {
 		&model.Participation{},
 		&model.MessageBoard{},
 		&model.Score{},
+		&model.Profile{},
 	)
 	if err != nil {
 		sentry.CaptureException(err)

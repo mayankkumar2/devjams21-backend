@@ -10,6 +10,7 @@ import (
 )
 
 type Repository interface {
+	FetchNetworkProfileByID(ctx context.Context, id *uuid.UUID) (*model.User, error)
 	FindMessages(ctx context.Context, userID *uuid.UUID) ([]model.MessageBoard, error)
 	MyParticipation(ctx context.Context, userId *uuid.UUID) ([]model.Participation, error)
 	CreateUser(ctx context.Context, record *auth.UserRecord, req *schema.CreateUserRequest) (*model.User, error)
@@ -18,4 +19,6 @@ type Repository interface {
 	FindByUID(ctx context.Context, uid string) (*model.User, error)
 	GetTeams(ctx context.Context, userID *uuid.UUID) ([]model.Team, error)
 	IsLeader(ctx context.Context, userID *uuid.UUID, teamID *uuid.UUID) (bool, error)
+	UpdateSocialAttributes(ctx context.Context, id *uuid.UUID, p map[string]interface{}) error
+	NetworkWithPeers(ctx context.Context, id *uuid.UUID) ([]model.User,error)
 }
