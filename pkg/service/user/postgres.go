@@ -39,7 +39,7 @@ func (r *repo) CreateUser(ctx context.Context, record *auth.UserRecord, req *sch
 		College:               req.Meta.College,
 		PhotoUrl:              func(url string) string {
 			if url == "" {
-				return "https://ibb.co/HLcyPpB"
+				return "https://i.ibb.co/RGXK64Y/user-avatar.png"
 			} else {
 				return url
 			}
