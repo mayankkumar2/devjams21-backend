@@ -37,7 +37,13 @@ func (r *repo) CreateUser(ctx context.Context, record *auth.UserRecord, req *sch
 		Email:                 record.Email,
 		RegNo:                 req.Meta.RegNo,
 		College:               req.Meta.College,
-		PhotoUrl:              record.PhotoURL,
+		PhotoUrl:              func(url string) string {
+			if url == "" {
+				return "https://ibb.co/HLcyPpB"
+			} else {
+				return url
+			}
+		}(record.PhotoURL),
 		PhoneNumber:           req.Meta.PhoneNumber,
 		Gender:                req.Meta.Gender,
 		Degree:                req.Meta.Degree,
